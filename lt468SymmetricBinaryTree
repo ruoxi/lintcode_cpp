@@ -1,0 +1,55 @@
+Symmetric Binary Tree
+Given a binary tree, check whether it is a mirror of itself (i.e., symmetric around its center).
+
+Have you met this question in a real interview? Yes
+Example
+    1
+   / \
+  2   2
+ / \ / \
+3  4 4  3
+is a symmetric binary tree.
+
+    1
+   / \
+  2   2
+   \   \
+   3    3
+is not a symmetric binary tree.
+
+/**
+ * Definition of TreeNode:
+ * class TreeNode {
+ * public:
+ *     int val;
+ *     TreeNode *left, *right;
+ *     TreeNode(int val) {
+ *         this->val = val;
+ *         this->left = this->right = NULL;
+ *     }
+ * }
+ */
+class Solution {
+public:
+    /**
+     * @param root, the root of binary tree.
+     * @return true if it is a mirror of itself, or false.
+     */
+    bool isSymmetric(TreeNode* root) {
+        // Write your code here
+        if(root == NULL) return true;
+        if(root->left == NULL && root->right == NULL) return true;
+        return helper(root->left, root->right);
+        
+    }
+    
+    bool helper(TreeNode* left, TreeNode* right)
+    {
+        if(left == NULL && right == NULL) return true;
+        if(left == NULL || right == NULL) return false;
+        
+        if(left->val != right->val) return false;
+        
+        return helper(left->left, right->right) && helper(left->right, right->left);
+    }
+};
