@@ -1,0 +1,79 @@
+Binary Tree Maximum Path Sum
+Given a binary tree, find the maximum path sum.
+
+The path may start and end at any node in the tree.
+
+Have you met this question in a real interview? Yes
+Example
+Given the below binary tree:
+
+  1
+ / \
+2   3
+return 6.
+
+
+
+/**
+ * Definition of TreeNode:
+ * class TreeNode {
+ * public:
+ *     int val;
+ *     TreeNode *left, *right;
+ *     TreeNode(int val) {
+ *         this->val = val;
+ *         this->left = this->right = NULL;
+ *     }
+ * }
+ */
+class Solution {
+public:
+    /**
+     * @param root: The root of binary tree.
+     * @return: An integer
+     */
+     
+    class Result
+    {
+    public:
+        int maxpath;
+        int singlepath;
+        Result(int m, int s): maxpath(m),singlepath(s) {}
+    };
+    int maxPathSum(TreeNode *root) {
+        // write your code here
+        //for a given node, there may be three different path
+        //1st max path from left subtree
+        //2nd max paht from right subtree
+        //3rd, single path from left subtree + root.val + single path from right subtree
+        
+        if(root == NULL) return 0;
+        
+        Result res = helper(root);
+        return res.maxpath;
+    }
+    
+    Result helper(TreeNode* root)
+    {
+        if(root == NULL)
+        {
+            return Result(INT_MIN, 0);
+        }
+        
+        Result left = helper(root->left);
+        Result right = helper(root->right);
+        
+        //single path may contain 0 node
+        int singlePath = max(max(left.singlepath, right.singlepath) + root->val, 0);
+        
+        //first compare max path from left and right
+        int maxPath = max(left.maxpath, right.maxpath);
+        maxPath = max(maxPath, left.singlepath+right.singlepath+root->val);
+        
+        
+        return Result(maxPath, singlePath);
+        
+        
+        
+    }
+};
