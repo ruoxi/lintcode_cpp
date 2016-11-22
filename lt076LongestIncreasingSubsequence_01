@@ -1,0 +1,86 @@
+Longest Increasing Subsequence
+
+ Description
+ Notes
+ Testcase
+ Judge
+Given a sequence of integers, find the longest increasing subsequence (LIS).
+
+You code should return the length of the LIS.
+
+Have you met this question in a real interview? Yes
+Clarification
+What's the definition of longest increasing subsequence?
+
+The longest increasing subsequence problem is to find a subsequence of a given sequence in which the subsequence's elements are in sorted order, lowest to highest, and in which the subsequence is as long as possible. This subsequence is not necessarily contiguous, or unique.
+
+https://en.wikipedia.org/wiki/Longest_increasing_subsequence
+
+Example
+For [5, 4, 1, 2, 3], the LIS is [1, 2, 3], return 3
+For [4, 2, 4, 5, 3, 7], the LIS is [2, 4, 5, 7], return 4
+
+
+class Solution {
+public:
+    /**
+     * @param nums: The integer array
+     * @return: The length of LIS (longest increasing subsequence)
+     */
+    //use a set to keep increasing sequence
+    //when traverse to new element
+    //check the lower bound of this new element in set
+    //if lower bound == set.end, this means all the elements in set is smaller than new element, safely insert this element to end of set
+    //otherwise replace the one equal/larger than new element with this new element so that we can give more space to the following 
+    int longestIncreasingSubsequence(vector<int> nums) {
+        // write your code here
+        
+        if(nums.empty()) return 0;
+        
+        int n = nums.size();
+        
+        vector<int> sequence;
+        
+        for(int i = 0; i < n; i++)
+        {
+            int index = binarySearch(sequence, nums[i]);
+            if(index == -1) sequence.push_back(nums[i]);
+            else
+            {
+                sequence[index] = nums[i];
+            }
+        }
+        
+        return sequence.size();
+    }
+    
+    //find the first one equal or larger than val
+    int binarySearch(vector<int>& seq, int val)
+    {
+        if(seq.empty()) return -1;
+        
+        int start = 0, end = seq.size()-1;
+        
+        while(start + 1 < end)
+        {
+            int mid = start + (end-start)/2;
+            
+            if(seq[mid] == val)
+            {
+                return mid;
+            }
+            else if(seq[mid] > val)
+            {
+                end = mid;
+            }
+            else
+            {
+                start = mid;
+            }
+        }
+        
+        if(seq[start] >= val) return start;
+        if(seq[end] >= val) return end;
+        return -1;
+    }
+};
