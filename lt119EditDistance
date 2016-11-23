@@ -1,0 +1,61 @@
+Edit Distance
+
+ Description
+ Notes
+ Testcase
+ Judge
+Given two words word1 and word2, find the minimum number of steps required to convert word1 to word2. (each operation is counted as 1 step.)
+
+You have the following 3 operations permitted on a word:
+
+Insert a character
+Delete a character
+Replace a character
+Have you met this question in a real interview? Yes
+Example
+Given word1 = "mart" and word2 = "karma", return 3.
+class Solution {
+public:    
+    /**
+     * @param word1 & word2: Two string.
+     * @return: The minimum number of steps.
+     */
+    //双序列dp
+    //state: dp[i][j]表示word1[0...i-1] 变为word2[0...j-1]用的min steps
+    //function: dp[i][j] = min(dp[i-1][j-1], dp[i-1][j]+1, dp[i][j-1]+1) if(word1[i-1] == word2[j-1])
+    //   = min(dp[i-1][j-1]+1, dp[i-1][j]+1, dp[i][j-1]+1)
+    //initialization: dp[i][0] = i // delete
+    //                dp[0][j] = j // add
+    int minDistance(string word1, string word2) {
+        // write your code here
+        
+        int n = word1.length();
+        int m = word2.length();
+        
+        vector<vector<int>> dp(n+1, vector<int>(m+1, 0));
+        
+        for(int i = 0; i <= n; i++)
+        {
+            dp[i][0] = i;
+        }
+        
+        for(int j = 1; j <=m; j++)
+        {
+            dp[0][j] = j;
+        }
+        
+        for(int i = 1; i <=n; i++)
+        {
+            for(int j = 1; j <=m; j++)
+            {
+                dp[i][j] = min(dp[i-1][j], min(dp[i][j-1], dp[i-1][j-1]))+1;
+                if(word1[i-1] == word2[j-1])
+                {
+                    dp[i][j] = min(dp[i][j], dp[i-1][j-1]);
+                }
+            }
+        }
+        
+        return dp[n][m];
+    }
+};
