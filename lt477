@@ -1,0 +1,120 @@
+Surrounded Regions
+
+ Description
+ Notes
+ Testcase
+ Judge
+Given a 2D board containing 'X' and 'O', capture all regions surrounded by 'X'.
+
+A region is captured by flipping all 'O''s into 'X''s in that surrounded region.
+
+Have you met this question in a real interview? Yes
+Example
+X X X X
+X O O X
+X X O X
+X O X X
+After capture all regions surrounded by 'X', the board should be:
+
+X X X X
+X X X X
+X X X X
+X O X X
+
+
+class Solution {
+public:
+    /**
+     * @param board a 2D board containing 'X' and 'O'
+     * @return void
+     */
+    //find the one connected to the border 
+    //then the rest can be flipped
+    vector<int> dx = {1, -1, 0, 0};
+    vector<int> dy = {0, 0, 1, -1};
+    void surroundedRegions(vector<vector<char>>& board) {
+        // Write your code here
+        if(board.empty() || board.at(0).empty()) return;
+        
+        int n = board.size();
+        int m = board.at(0).size();
+        
+        
+        //use bfs
+        queue<pair<int, int>> q;
+        for(int i = 0; i <n; i++)
+        {
+            if(board[i][0] == 'O')
+            {
+                q.push(make_pair(i, 0));
+                board[i][0] = 'Y';
+            }
+            
+            if(board[i][m-1] == 'O')
+            {
+                q.push(make_pair(i, m-1));
+                board[i][m-1] = 'Y';
+            }
+        }
+        
+        for(int i = 0; i < m; i++)
+        {
+            if(board[0][i] == 'O')
+            {
+                q.push(make_pair(0, i));
+                board[0][i] = 'Y';
+            }
+            if(board[n-1][i] == 'O')
+            {
+                q.push(make_pair(n-1, i));
+                board[n-1][i] = 'Y';
+            }
+        }
+        
+        
+        while(!q.empty())
+        {
+            int curx = q.front().first;
+            int cury = q.front().second;
+            
+            q.pop();
+            for(int i = 0; i < 4; i++)
+            {
+                int nx = curx + dx[i];
+                int ny = cury + dy[i];
+                
+                if(nx >=0 && nx < n && ny >=0 && ny < m && board[nx][ny] == 'O')
+                {
+                    board[nx][ny] = 'Y';
+                    q.push(make_pair(nx, ny));
+                }
+            }
+            
+        }
+        
+        //now mark the rest O to x
+        for(int i = 0; i < n; i++)
+        {
+            for(int j = 0; j < m; j++)
+            {
+                if(board[i][j] == 'O')
+                {
+                    board[i][j] = 'X';
+                }
+            }
+        }
+        
+        
+        //now mark Y to O
+        for(int i = 0; i < n; i++)
+        {
+            for(int j = 0; j < m; j++)
+            {
+                if(board[i][j] == 'Y')
+                {
+                    board[i][j] = 'O';
+                }
+            }
+        }
+    }
+};
