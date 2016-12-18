@@ -1,0 +1,112 @@
+Add and Search Word
+
+Design a data structure that supports the following two operations: addWord(word) and search(word)
+
+search(word) can search a literal word or a regular expression string containing only letters a-z or ..
+
+A . means it can represent any one letter.
+
+ Notice
+
+You may assume that all words are consist of lowercase letters a-z.
+
+Have you met this question in a real interview? Yes
+Example
+addWord("bad")
+addWord("dad")
+addWord("mad")
+search("pad")  // return false
+search("bad")  // return true
+search(".ad")  // return true
+search("b..")  // return true
+
+
+class WordDictionary {
+public:
+
+    class TrieNode
+    {
+    public:
+        vector<TrieNode*> children;
+        bool isword;
+        TrieNode()
+        {
+            children.assign(26, NULL);
+            isword = false;
+        }
+    };
+    
+    WordDictionary()
+    {
+        root = new TrieNode();
+    }
+    // Adds a word into the data structure.
+    void addWord(string word) {
+        // Write your code here
+        
+        TrieNode* cur = root;
+        
+        if(word.empty()) return;
+        
+        int n = word.length();
+        for(int i = 0; i < n; i++)
+        {
+            char c = word[i];
+            if(cur->children[c - 'a'] == NULL)
+            {
+                cur->children[c - 'a'] = new TrieNode();
+            }
+            
+            cur = cur->children[c-'a'];
+        }
+        cur->isword = true;
+    }
+
+    // Returns if the word is in the data structure. A word could
+    // contain the dot character '.' to represent any one letter.
+    bool search(string word) {
+        // Write your code here
+        if(word.empty()) return true;
+        return helper(word, 0, root);
+    }
+    
+    
+    bool helper(string& word, int index, TrieNode* cur)
+    {
+        if(index == word.length())
+        {
+            return cur->isword;
+        }
+        
+        char c = word[index];
+        
+        if(c != '.')
+        {
+            if(cur->children[c - 'a'] == NULL)
+            {
+                return false;
+            }
+            else
+            {
+                return helper(word, index+1, cur->children[c-'a']);
+            }
+        }
+        else
+        {
+            for(auto child : cur->children)
+            {
+                if(child != NULL && helper(word, index+1, child))
+                {
+                    return true;
+                }
+            }
+        }
+    }
+    
+    TrieNode* root;
+};
+
+// Your WordDictionary object will be instantiated and called as such:
+// WordDictionary wordDictionary;
+// wordDictionary.addWord("word");
+// wordDictionary.search("pattern");
