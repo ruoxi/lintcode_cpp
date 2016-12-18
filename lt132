@@ -1,0 +1,123 @@
+Word Search II
+
+ Description
+ Notes
+ Testcase
+ Judge
+Given a matrix of lower alphabets and a dictionary. Find all words in the dictionary that can be found in the matrix. A word can start from any position in the matrix and go left/right/up/down to the adjacent position. 
+
+
+Have you met this question in a real interview? Yes
+Example
+Given matrix:
+doaf
+agai
+dcan
+and dictionary:
+{"dog", "dad", "dgdg", "can", "again"}
+
+return {"dog", "dad", "can", "again"}
+
+
+class Solution {
+public:
+    /**
+     * @param board: A list of lists of character
+     * @param words: A list of string
+     * @return: A list of string
+     */
+     
+    class TrieNode
+    {
+    public:
+        vector<TrieNode*> children;
+        bool isword;
+        TrieNode()
+        {
+            children.assign(26, NULL);
+            isword = false;
+        }
+    };
+    
+    vector<string> wordSearchII(vector<vector<char> > &board, vector<string> &words) {
+        // write your code here
+        
+        //build a trie
+        TrieNode* root = buildtrie(words);
+        int n = board.size();
+        int m = board.at(0).size();
+        set<string> res;
+        string word;
+        vector<vector<bool>> visited(n, vector<bool>(m, false));
+        //then dfs search the board, use trie
+        for(int i = 0; i < n; i++)
+        {
+            for(int j = 0; j < m; j++)
+            {
+                dfs(board, i, j, root, word, res, visited);
+            }
+        }
+        
+        return vector<string>(res.begin(), res.end());
+    }
+    
+
+    void dfs(vector<vector<char>>& board, int i, int j, TrieNode* root, string& word, set<string>& res, vector<vector<bool>>& visited )
+    {
+        if(root->isword)
+        {
+            res.insert(word);
+        }
+        
+        if(i >= board.size() || i <0 || j >= board.at(0).size() || j < 0 || visited[i][j])
+        {
+            return;
+        }
+        
+        if(root->children[board[i][j] - 'a'] == NULL)
+        {
+            return;
+        }
+        
+        visited[i][j] = true;
+        word.push_back(board[i][j]);
+        dfs(board, i+1, j, root->children[board[i][j]-'a'], word, res, visited);
+        
+        dfs(board, i-1, j, root->children[board[i][j]-'a'], word, res, visited);
+        
+        dfs(board, i, j+1, root->children[board[i][j]-'a'], word, res, visited);
+        
+        dfs(board, i, j-1, root->children[board[i][j]-'a'], word, res, visited);
+        
+        word.pop_back();
+        visited[i][j] = false;
+        
+        
+    }
+    
+    TrieNode* buildtrie(vector<string>& words)
+    {
+        TrieNode* root = new TrieNode();
+        if(words.empty()) return root;
+        
+        
+        for(auto word: words)
+        {
+            TrieNode* cur = root;
+            for(auto c : word)
+            {
+                if(cur->children[c-'a'] == NULL)
+                {
+                    cur->children[c-'a'] = new TrieNode();
+                }
+                
+                cur = cur->children[c-'a'];
+            }
+            cur->isword = true;
+        }
+        
+        return root;
+    }
+    
+    
+};
