@@ -1,0 +1,147 @@
+Building Outline
+
+ Description
+ Notes
+ Testcase
+ Judge
+Given N buildings in a x-axis，each building is a rectangle and can be represented by a triple (start, end, height)，where start is the start position on x-axis, end is the end position on x-axis and height is the height of the building. Buildings may overlap if you see them from far away，find the outline of them。
+
+An outline can be represented by a triple, (start, end, height), where start is the start position on x-axis of the outline, end is the end position on x-axis and height is the height of the outline.
+
+//这里要注意如果在同一个x有多个building开始，或多个building 结束，
+//注意排序时，如果在同一个x有2个building开始和结束，那么开始的放在最前面
+
+//runtime: O(nlogn)
+//space: O(n)
+
+class Solution {
+public:
+    /**
+     * @param buildings: A list of lists of integers
+     * @return: Find the outline of those buildings
+     */
+    //sweep line to sort the points based on x axis and is start
+    //then use hash heap to keep track of largest height
+    //add the point to result when the largest height change
+    
+    class Point
+    {
+    public:
+        int x;
+        int h;
+        bool isstart;
+        Point(int xx, int hh, bool iss)
+        {
+            x = xx;
+            h = hh;
+            isstart = iss;
+        }
+    };
+    
+    class Comparator
+    {
+    public:
+        bool operator()(const Point& a, const Point& b)
+        {
+            if(a.x != b.x) return a.x < b.x;
+            
+            if(a.isstart && b.isstart)
+            {
+                return b.h < a.h;
+            }
+            
+            if(!a.isstart && !b.isstart)
+            {
+                return a.h > b.h;
+            }
+           
+           //注意这里start 放在end 前面
+            return a.isstart;
+        }
+    };
+    vector<vector<int> > buildingOutline(vector<vector<int> > &buildings) {
+        // write your code here
+        
+        
+        if(buildings.empty() || buildings.at(0).empty()) return vector<vector<int>>();
+        
+        int n = buildings.size();
+        
+        vector<Point> points;
+        for(int i = 0; i < n; i++)
+        {
+            Point start(buildings[i][0], buildings[i][2], true);
+            Point end(buildings[i][1], buildings[i][2], false);
+            points.push_back(start);
+            points.push_back(end);
+        }
+        
+        sort(points.begin(), points.end(), Comparator());
+        
+        multiset<int, greater<int>> height;
+        
+        vector<Point> res;
+        for(int i = 0; i < points.size(); i++)
+        {
+            Point cur = points[i];
+            if(cur.isstart)
+            {
+                if(height.empty() || cur.h > *height.begin())
+                {
+                    //check if start at same x
+                    if(!res.empty() && res.back().x == cur.x && res.back().h < cur.h)
+                    {
+                        res.back().h = cur.h;
+                    }
+                    else
+                    {
+                        res.push_back(cur);
+                    }
+                }
+                height.insert(cur.h);
+            }
+            else
+            {
+                //erase from height
+                multiset<int>::iterator it = height.find(cur.h);
+                height.erase(it);
+                /*if(cur.x == 99)
+                {
+                    cout << "cur.h=" << cur.h << " top after erase " << *height.begin() << endl;
+                }*/
+                //check if max height change
+                if(height.empty() || cur.h > *height.begin())
+                {
+                    int curh = 0;
+                    if(!height.empty())
+                    {
+                        curh = *height.begin(); 
+                    }
+                    
+                    //check if last element in res has the same x
+                    if(res.back().x == cur.x && res.back().h > curh)
+                    {
+                        res.back().h = curh;
+                        continue;
+                    }
+                    res.push_back(Point(cur.x, curh, false));
+                }
+                
+            }
+        }
+        
+        
+        //now collect result
+        vector<vector<int>> ans;
+        for(int i = 0; i < res.size()-1; i++)
+        {
+            int x = res[i].x;
+            int y = res[i+1].x;
+            int h = res[i].h;
+            if(h == 0) continue;
+            ans.push_back({x, y, h});
+        }
+        
+        return ans;
+    }
+};
