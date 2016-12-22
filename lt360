@@ -1,4 +1,10 @@
-Sliding Window Median    
+
+
+这里需要注意的是，因为如果window size >k.需要移除left element, 普通的heap做不到删除，所以需要用hashheap == heap + hash, hash中存储对应的element在heap中的位置。这样删除的runtime是o(logn), 查找最大最小是o(1), insert是o(logn)
+
+这里直接用了multiset, 也可以达到同样的目的，但是查找最大最小值时runtime是o(logn).用multiset而不是set是为了允许值得重复；但是删除的时候需要注意先用find找到对应的iterator,然后只删除这个pointer, 如果直接用multiset::erase(nums[i])会把multiset中全部的相同值都删掉
+
+还要注意这里当i>0时，才开始向heap中插入新元素，是为了处理i=0; k=1的情况Sliding Window Median    
 
 
 
