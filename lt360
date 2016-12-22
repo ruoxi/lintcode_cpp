@@ -1,0 +1,140 @@
+Sliding Window Median    
+
+
+
+
+ Description 
+
+
+ Notes 
+
+
+ Testcase 
+
+
+ Judge 
+
+
+
+
+
+
+Given an array of n integer, and a moving window(size k), move the window at each iteration from the start of the array, find the median of the element inside the window at each moving. (If there are even numbers in the array, return the N/2-th number after sorting the element in the window. )
+
+Have you met this question in a real interview? 
+
+Yes
+ 
+Example 
+
+For array [1,2,7,8,5], moving window size k = 3. return [2,7,7]
+
+At first the window is at the start of the array like this 
+
+[ | 1,2,7 | ,8,5] , return the median 2;
+
+then the window move one step forward.
+
+[1, | 2,7,8 | ,5], return the median 7;
+
+then the window move one step forward again.
+
+[1,2, | 7,8,5 | ], return the median 7;
+
+
+class Solution {
+public:
+    /**
+     * @param nums: A list of integers.
+     * @return: The median of the element inside the window at each moving
+     */
+    //use minheap to keep nums >= median
+    //use maxheap to keep nums < median
+    //here need to use hashheap because when window is sliding, we
+    //need to get rid of the old elements
+    vector<int> medianSlidingWindow(vector<int> &nums, int k) {
+        // write your code here
+        
+        if(nums.empty()) return vector<int>();
+        
+        int n = nums.size();
+        
+        multiset<int, greater<int>> maxheap;
+        multiset<int, less<int>> minheap;
+        int median = nums[0];
+        vector<int> res;
+        int left = 0;
+        for(int i = 0; i <n; i++)
+        {
+            //cout << "nums[" << i  << "]=" << nums[i] << " median=" << median << " left=" << left << endl;
+            if(i > 0)
+            {
+                if(nums[i] < median)
+                {
+                    maxheap.insert(nums[i]);
+                }
+                else
+                {
+                    minheap.insert(nums[i]);
+                }
+            }
+
+            
+            //if window size >k, remove the left most element
+            if(i -left>= k)
+            {
+                if(nums[left] < median)
+                {
+                    multiset<int, greater<int>>::iterator it = maxheap.find(nums[left]);
+                    maxheap.erase(it);
+                }
+                else if(nums[left] == median)
+                {
+                    if(minheap.size() > 0)
+                    {
+                        median = *minheap.begin();
+                        minheap.erase(minheap.begin());
+                    }
+                    else if(maxheap.size() > 0)
+                    {
+                        median = *maxheap.begin();
+                        maxheap.erase(maxheap.begin());
+                    }
+
+                }
+                else
+                {
+                    multiset<int, less<int>>::iterator it = minheap.find(nums[left]);
+                    minheap.erase(it);
+                }
+                left++;
+            }
+            
+            //make sure maxheap and minheap are balanced
+            //maxheap.size() == minheap().size()
+            //or maxheap.size()+1 == minheap.size()
+            while(maxheap.size() >  minheap.size())
+            {
+                //move one to right
+                minheap.insert(median);
+                median = *maxheap.begin();
+                maxheap.erase(maxheap.begin());
+            }
+            
+            while(maxheap.size() + 1 < minheap.size())
+            {
+                //move one to left
+                maxheap.insert(median);
+                median = *minheap.begin();
+                minheap.erase(minheap.begin());
+            }
+            
+            if(i-left >= k-1)
+            {
+                res.push_back(median);
+            }
+        }
+        
+        return res;
+    }
+};
