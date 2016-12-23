@@ -1,0 +1,83 @@
+Maximal Rectangle
+
+ Description
+ Notes
+ Testcase
+ Judge
+Given a 2D boolean matrix filled with False and True, find the largest rectangle containing all True and return its area.
+
+Have you met this question in a real interview? Yes
+Example
+Given a matrix:
+
+[
+  [1, 1, 0, 0, 1],
+  [0, 1, 0, 0, 1],
+  [0, 0, 1, 1, 1],
+  [0, 0, 1, 1, 1],
+  [0, 0, 0, 0, 1]
+]
+return 6.
+
+//Runtime: O(nm)
+//Space: O(m)
+
+class Solution {
+public:
+    /**
+     * @param matrix a boolean 2D matrix
+     * @return an integer
+     */
+    int maximalRectangle(vector<vector<bool> > &matrix) {
+        // Write your code here
+        
+        if(matrix.empty() || matrix.at(0).empty()) return 0;
+        
+        int n = matrix.size();
+        int m = matrix.at(0).size();
+        
+        int res = 0;
+        
+        vector<int> heights(m+1, 0);
+        heights[m] = -1;
+        for(int i = 0; i < n; i++)
+        {
+            
+            for(int j = 0; j < m; j++)
+            {
+                if(matrix[i][j])
+                {
+                    heights[j] += 1;
+                }
+                else
+                {
+                    heights[j] = 0;
+                }
+            }
+            
+            //use max area in histogram
+            
+            stack<int> stk;
+            int j = 0;
+            while(j <=m)
+            {
+                if(stk.empty() || heights[stk.top()] < heights[j])
+                {
+                    stk.push(j);
+                    j++;
+                }
+                else
+                {
+                    int h = heights[stk.top()]; stk.pop();
+                    int left = stk.empty() ? -1 : stk.top();
+                    int width = j - left - 1;
+                    int area = h*width;
+                    res = max(res, area);
+                }
+            }
+            
+        }
+        
+        return res;
+    }
+};
