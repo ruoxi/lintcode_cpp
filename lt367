@@ -1,0 +1,114 @@
+Expression Tree Build
+
+ Description
+ Notes
+ Testcase
+ Judge
+The structure of Expression Tree is a binary tree to evaluate certain expressions.
+All leaves of the Expression Tree have an number string value. All non-leaves of the Expression Tree have an operator string value.
+
+Now, given an expression array, build the expression tree of this expression, return the root of this expression tree.
+
+
+/**
+ * Definition of ExpressionTreeNode:
+ * class ExpressionTreeNode {
+ * public:
+ *     string symbol;
+ *     ExpressionTreeNode *left, *right;
+ *     ExpressionTreeNode(string symbol) {
+ *         this->symbol = symbol;
+ *         this->left = this->right = NULL;
+ *     }
+ * }
+ */
+ 
+
+
+class Solution {
+public:
+    /**
+     * @param expression: A string array
+     * @return: The root of expression tree
+     */
+     
+    class TreeNode
+    {
+    public:
+        int weight;
+        ExpressionTreeNode* node;
+        TreeNode(int w, string str)
+        {
+            weight = w;
+            node = new ExpressionTreeNode(str);
+        }
+    };
+    
+    int getweight(string& str, int base)
+    {
+        if(str == "+" || str == "-")
+        {
+            return base+1;
+        }
+        else if(str == "*" || str == "/")
+        {
+            return base+2;
+        }
+        
+        return INT_MAX;
+    }
+    
+    ExpressionTreeNode* build(vector<string> &expression) {
+        // write your code here
+        
+        if(expression.empty()) return NULL;
+        
+        int n = expression.size();
+        int base = 0;
+        stack<TreeNode*> stk;
+        for(int i = 0; i < n; i++)
+        {
+            string cur = expression[i];
+            if(cur == "(")
+            {
+                base += 10;
+                continue;
+            }
+            else if(cur == ")")
+            {
+                base -= 10;
+                continue;
+            }
+            
+            int weight = getweight(cur, base);
+            TreeNode* curnode = new TreeNode( weight, cur);
+            while(!stk.empty() && weight <= stk.top()->weight)
+            {
+                curnode->node->left = stk.top()->node;
+                stk.pop();
+            }
+            
+            if(!stk.empty())
+            {
+                stk.top()->node->right = curnode->node;
+            }
+            
+            stk.push(curnode);
+            
+            
+        }
+        
+        
+        if(stk.empty()) return NULL;
+        ExpressionTreeNode * res = NULL;
+        
+        while(!stk.empty())
+        {
+            res = stk.top()->node;
+            stk.pop();
+        }
+        
+        return res;
+        
+    }
+};
