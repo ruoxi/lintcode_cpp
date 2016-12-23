@@ -1,0 +1,111 @@
+Convert Expression to Polish Notation
+
+ Description
+ Notes
+ Testcase
+ Judge
+Given an expression string array, return the Polish notation of this expression. (remove the parentheses)
+
+Have you met this question in a real interview? Yes
+Clarification
+Definition of Polish Notation:
+
+http://en.wikipedia.org/wiki/Polish_notation
+http://baike.baidu.com/view/7857952.htm
+Example
+For the expression [(5 − 6) * 7] (which represented by ["(", "5", "−", "6", ")", "*", "7"]), the corresponding polish notation is [* - 5 6 7] (which the return value should be ["*", "−", "5", "6", "7"]).
+
+
+class Solution {
+public:
+    /**
+     * @param expression: A string array
+     * @return: The Polish notation of this expression
+     */
+     
+    bool isoperator(string& str)
+    {
+        if(str == "+" || str == "-" || str == "*" || str == "/")
+        {
+            return true;
+        }
+        
+        return false;
+    }
+    
+    int getweight(string& str)
+    {
+        if(str == "+" || str == "-")
+        {
+            return 1;
+        }
+        else if(str == "*" || str == "/")
+        {
+            return 2;
+        }
+        
+        return 0;
+    }
+    vector<string> convertToPN(vector<string> &expression) {
+        // write your code here
+        if(expression.empty()) return vector<string>();
+        
+        int n = expression.size();
+        
+        stack<string> ops;
+        stack<string> stk;
+        vector<string> res;
+        
+        for(int i = n-1; i >= 0; i--)
+        {
+            string cur = expression[i];
+            if(cur  == ")")
+            {
+                ops.push(")");
+                continue;
+            }
+            else if(cur == "(")
+            {
+                //push everything to stk until hit ")"
+                while(ops.top() != ")")
+                {
+                    stk.push(ops.top());
+                    ops.pop();
+                }
+                
+                ops.pop();
+                continue;
+            }
+            
+            if(isoperator(cur))
+            {
+                while(!ops.empty() && ops.top() != ")" && getweight(cur) < getweight(ops.top()))
+                {
+                    stk.push(ops.top());
+                    ops.pop();
+                }
+                ops.push(cur);
+                
+               
+            }
+            else
+            {
+                stk.push(cur);
+            }
+        }
+        
+        while(!ops.empty())
+        {
+            stk.push(ops.top());
+            ops.pop();
+        }
+        
+        while(!stk.empty())
+        {
+            res.push_back(stk.top());
+            stk.pop();
+        }
+        
+        return res;
+    }
+};
