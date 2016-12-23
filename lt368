@@ -1,0 +1,163 @@
+Expression Evaluation
+
+ Description
+ Notes
+ Testcase
+ Judge
+Given an expression string array, return the final result of this expression
+
+ Notice
+
+The expression contains only integer, +, -, *, /, (, ).
+
+Have you met this question in a real interview? Yes
+Example
+For the expression 2*6-(23+7)/(1+2),
+input is
+
+[
+  "2", "*", "6", "-", "(",
+  "23", "+", "7", ")", "/",
+  (", "1", "+", "2", ")"
+],
+return 2
+
+
+class Solution {
+public:
+    /**
+     * @param expression: a vector of strings;
+     * @return: an integer
+     */
+    int evaluateExpression(vector<string> &expression) {
+        // write your code here
+        //first convert to reverse polish notation
+        //then calculate the value
+        if(expression.empty()) return 0;
+        
+        vector<string> rpn = getRPN(expression);
+        
+        //now evaluate rpn
+        stack<int> stk;
+        
+        for(int i = 0; i < rpn.size(); i++)
+        {
+            string cur = rpn[i];
+            if(isoperator(cur))
+            {
+                int second = stk.top(); 
+                stk.pop();
+                int first = stk.top();
+                stk.pop();
+                
+                //apply operator
+                int res = applyop(first, second, cur);
+                stk.push(res);
+            }
+            else
+            {
+                int val = stoi(cur);
+                stk.push(val);
+            }
+        }
+        
+        if(stk.empty()) return 0;
+        
+        return stk.top();
+    }
+    
+    
+    int applyop(int first, int second, string& op)
+    {
+        if(op == "+")
+        {
+            return first + second;
+        }
+        else if (op == "-")
+        {
+            return first - second;
+        }
+        else if(op == "*")
+        {
+            return first*second;
+        }
+        else if(op == "/")
+        {
+            return first/second;
+        }
+        return 0;
+    }
+    bool isoperator(string& str)
+    {
+        if(str == "+" || str == "-" || str == "*" || str == "/")
+            return true;
+            
+        return false;
+    }
+    int getweight(string& str)
+    {
+        if(str == "+" || str == "-")
+        {
+            return 1;
+        }
+        else if(str == "*" || str == "/")
+        {
+            return 2;
+        }
+        else if(str == "(")
+        {
+            return 0;
+        }
+        
+        return 3;
+    }
+    vector<string> getRPN(vector<string>& expression)
+    {
+        if(expression.empty()) return vector<string>();
+        
+        int n = expression.size();
+        
+        vector<string> res;
+        stack<string> stk;
+        for(int i = 0; i < n; i++)
+        {
+            string cur = expression[i];
+            
+            if(cur == "(")
+            {
+                stk.push("(");
+                continue;
+            }
+            else if(cur == ")")
+            {
+                while(!stk.empty() && stk.top() != "(")
+                {
+                    res.push_back(stk.top());
+                    stk.pop();
+                }
+                
+                stk.pop();
+                continue;
+            }
+            
+            int weight = getweight(cur);
+            
+            while(!stk.empty() && weight <= getweight(stk.top()))
+            {
+                res.push_back(stk.top());
+                stk.pop();
+            }
+            
+            stk.push(cur);
+            
+        }
+        
+        while(!stk.empty())
+        {
+            res.push_back(stk.top());
+            stk.pop();
+        }
+
+        return res;
+    }
+};
