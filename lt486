@@ -1,0 +1,85 @@
+Merge k Sorted Arrays
+
+ Description
+ Notes
+ Testcase
+ Judge
+Given k sorted integer arrays, merge them into one sorted array.
+
+Have you met this question in a real interview? Yes
+Example
+Given 3 sorted arrays:
+
+[
+  [1, 3, 5, 7],
+  [2, 4, 6],
+  [0, 8, 9, 10, 11]
+]
+return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].
+
+
+//Runtime: O(n*len), len is average array[i] length
+//Space: O(n)
+class Solution {
+public:
+    /**
+     * @param arrays k sorted integer arrays
+     * @return a sorted array
+     */
+    
+    
+    class Node
+    {
+    public:
+        int array_index;
+        int idx;
+        int value;
+        Node(int a, int i, int v)
+        : array_index(a)
+        ,idx(i)
+        ,value(v) {}
+        
+    };
+    
+    
+    class Comparator
+    {
+    public:
+        bool operator() (const Node& a, const Node& b)
+        {
+            return a.value > b.value;
+        }
+    };
+    vector<int> mergekSortedArrays(vector<vector<int>>& arrays) {
+        // Write your code here
+        
+        if(arrays.empty() || arrays.at(0).empty()) return vector<int>();
+        
+        int n = arrays.size();
+        
+        priority_queue<Node, vector<Node>, Comparator> pq;
+        
+        for(int i = 0; i < n; i++)
+        {
+            if(arrays[i].empty()) continue;
+            pq.push(Node(i, 0, arrays[i][0]));
+        }
+        
+        vector<int> res;
+        while(!pq.empty())
+        {
+            Node cur = pq.top();
+            pq.pop();
+            
+            res.push_back(cur.value);
+            
+            if(cur.idx < arrays[cur.array_index].size() - 1)
+            {
+                pq.push(Node(cur.array_index, cur.idx+1, arrays[cur.array_index][cur.idx+1]));
+            }
+        }
+        
+        return res;
+        
+    }
+};
