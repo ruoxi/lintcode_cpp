@@ -1,0 +1,62 @@
+Min Stack
+
+ Description
+ Notes
+ Testcase
+ Judge
+Implement a stack with min() function, which will return the smallest number in the stack.
+
+It should support push, pop and min operation all in O(1) cost.
+
+ Notice
+
+min operation will never be called if there is no number in the stack.
+
+Have you met this question in a real interview? Yes
+Example
+push(1)
+pop()   // return 1
+push(2)
+push(3)
+min()   // return 2
+push(1)
+min()   // return 1
+
+
+class MinStack {
+public:
+    MinStack() {
+        // do initialization if necessary
+    }
+
+    void push(int number) {
+        // write your code here
+        stk.push(number);
+        
+        if(minstk.empty() || minstk.top() >= number)
+        {
+            minstk.push(number);
+        }
+    }
+
+    int pop() {
+        // write your code here
+        
+        int res = stk.top();
+        stk.pop();
+        if(minstk.top() == res)
+        {
+            minstk.pop();
+        }
+        
+        return res;
+    }
+
+    int min() {
+        // write your code here
+        return minstk.top();
+    }
+    
+    stack<int> minstk;
+    stack<int> stk;
+};
