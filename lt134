@@ -1,0 +1,123 @@
+LRU Cache
+
+ Description
+ Notes
+ Testcase
+ Judge
+Design and implement a data structure for Least Recently Used (LRU) cache. It should support the following operations: get and set.
+
+get(key) - Get the value (will always be positive) of the key if the key exists in the cache, otherwise return -1.
+set(key, value) - Set or insert the value if the key is not already present. When the cache reached its capacity, it should invalidate the least recently used item before inserting a new item.
+
+
+class LRUCache{
+    
+    class ListNode
+    {
+    public:
+        int key;
+        int val;
+        ListNode* prev;
+        ListNode* next;
+        ListNode(int k, int v)
+        :val(v), key{k} {}
+    };
+public:
+    // @param capacity, an integer
+    LRUCache(int capacity) {
+        // write your code here
+        this->capacity = capacity;
+        head = new ListNode(-1, -1);
+        tail = new ListNode(-1, -1);
+        head->next = tail;
+        tail->prev = head;
+        size = 0;
+    }
+    
+    // @return an integer
+    int get(int key) {
+        // write your code here
+        //cout << "get key=" << key << endl;
+        if(table.find(key) == table.end())
+        {
+            return -1;
+        }
+        
+        ListNode* cur = table[key];
+        
+        //put the cur to the end of list, means most recent used node
+        removecur(cur);
+        movetotail(cur);
+        return table[key]->val;
+    }
+
+    // @param key, an integer
+    // @param value, an integer
+    // @return nothing
+    void set(int key, int value) {
+        // write your code here
+        ListNode* cur = NULL;
+        if(table.find(key) == table.end())
+        {
+            cur = new ListNode(key, value);
+            table[key] = cur;
+            size++;
+            movetotail(cur);
+
+        }
+        else
+        {
+            cur = table[key];
+            //update value
+            cur->val = value;
+            removecur(cur);
+            movetotail(cur);
+            
+        }
+        //cout <<" key=" << key << " value=" << value << " size=" << size << endl;
+        //check if need to evit any node from head
+        if(size > capacity)
+        {
+            ListNode* remove = head->next;
+            //cout << "evit element " << remove->key << endl;
+            head->next = remove->next;
+            remove->next->prev = head;
+            //remove from hashtable
+            //cout <<"erase key=" << remove->key << endl;
+            table.erase(remove->key);
+            delete(remove);
+            size--;
+        }
+    }
+    
+    
+    void removecur(ListNode* cur)
+    {
+        ListNode* prev = cur->prev;
+        ListNode* next = cur->next;
+        prev->next = next;
+        next->prev = prev;
+    }
+    void movetotail(ListNode* cur)
+    {
+        //cout << "mvoe to tail\n";
+        ///cout << " check\n";
+        //connect cur prev to cur next
+        ListNode* prev =NULL;
+        //cout << "move to tail";
+        //then move cur in front of tail
+        prev = tail->prev;
+        prev->next = cur;
+        cur->prev = prev;
+        cur->next = tail;
+        tail->prev = cur;
+    }
+    
+    
+    ListNode* head;
+    ListNode* tail;
+    unordered_map<int, ListNode*> table;
+    int capacity;
+    int size;
+    
+};
