@@ -1,0 +1,83 @@
+Implement Stack by Two Queues
+
+ Description
+ Notes
+ Testcase
+ Judge
+Implement a stack by two queues. The queue is first in first out (FIFO). That means you can not directly pop the last element in a queue.
+
+Have you met this question in a real interview? Yes
+Example
+push(1)
+pop()
+push(2)
+isEmpty() // return false
+top() // return 2
+pop()
+isEmpty() // return true
+
+class Stack {
+public:
+    // Push a new item into the stack
+    void push(int x) {
+        // Write your code here
+        if(q1.empty())
+        {
+            q1.push(x);
+            while(!q2.empty())
+            {
+                q1.push(q2.front());
+                q2.pop();
+            }
+        }
+        else
+        {
+            q2.push(x);
+            while(!q1.empty())
+            {
+                q2.push(q1.front());
+                q1.pop();
+            }
+        }
+    }
+
+    // Pop the top of the stack
+    void pop() {
+        // Write your code here
+        if(q1.empty())
+        {
+            q2.pop();
+        }
+        else
+        {
+            q1.pop();
+        }
+        
+    }
+
+    // Return the top of the stack
+    int top() {
+        // Write your code here
+        int res = -1;
+        if(q1.empty())
+        {
+            res = q2.front();
+        }
+        else
+        {
+            res = q1.front();
+        }
+        
+        return res;
+    }
+
+    // Check the stack is empty or not.
+    bool isEmpty() {
+        // Write your code here
+        return q1.empty() && q2.empty();
+    }
+    
+   
+    queue<int> q1;
+    queue<int> q2;
+};
