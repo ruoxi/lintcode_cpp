@@ -1,0 +1,73 @@
+Top k Largest Numbers II
+
+ Description
+ Notes
+ Testcase
+ Judge
+Implement a data structure, provide two interfaces:
+
+add(number). Add a new number in the data structure.
+topk(). Return the top k largest numbers in this data structure. k is given when we create the data structure.
+Have you met this question in a real interview? Yes
+Example
+s = new Solution(3);
+>> create a new data structure.
+s.add(3)
+s.add(10)
+s.topk()
+>> return [10, 3]
+s.add(1000)
+s.add(-99)
+s.topk()
+>> return [1000, 10, 3]
+s.add(4)
+s.topk()
+>> return [1000, 10, 4]
+s.add(100)
+s.topk()
+>> return [1000, 100, 10]
+
+
+class Solution {
+public:
+    Solution(int k) {
+        // initialize your data structure here.
+        size = k;
+    }
+
+    void add(int num) {
+        // Write your code here
+        nums.push_back(num);
+        pq.push(num);
+        
+        if(pq.size() > size)
+        {
+            pq.pop();
+        }
+    }
+
+    vector<int> topk() {
+        // Write your code here
+        
+        int n = pq.size();
+        vector<int> res(n, -1);
+        for(int i = 0; i < n; i++)
+        {
+            int cur = pq.top();
+            pq.pop();
+            res[n-i-1] = cur;
+        }
+        
+        //add back to pq
+        for(int i = 0; i < n; i++)
+        {
+            pq.push(res[i]);
+        }
+        
+        return res;
+    }
+    
+    vector<int> nums;
+    priority_queue<int, vector<int>, greater<int>> pq;
+    int size;
+};
