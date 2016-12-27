@@ -1,0 +1,78 @@
+Implement Stack
+
+ Description
+ Notes
+ Testcase
+ Judge
+Implement a stack. You can use any data structure inside a stack except stack itself to implement it.
+
+Have you met this question in a real interview? Yes
+Example
+push(1)
+pop()
+push(2)
+top()  // return 2
+pop()
+isEmpty() // return true
+push(3)
+isEmpty() // return false
+class Stack {
+public:
+
+    class ListNode
+    {
+    public:
+        int val;
+        ListNode* next;
+        ListNode* prev;
+        ListNode(int v)
+        :val(v) {}
+    };
+    
+    Stack()
+    {
+        head = new ListNode(-1);
+        tail = new ListNode(-1);
+        head->next = tail;
+        tail->prev = head;
+    }
+    // Push a new item into the stack
+    void push(int x) {
+        // Write your code here
+        //add to front of list
+        ListNode* next = head->next;
+        ListNode* insert = new ListNode(x);
+        head->next = insert;
+        insert->prev = head;
+        
+        insert->next = next;
+        next->prev = insert;
+    }
+
+    // Pop the top of the stack
+    void pop() {
+        // Write your code here
+        //remove the front node
+        ListNode* remove = head->next;
+        head->next = remove->next;
+        remove->next->prev = head;
+        delete(remove);
+    }
+
+    // Return the top of the stack
+    int top() {
+        // Write your code here
+        return head->next->val;
+    }
+
+    // Check the stack is empty or not.
+    bool isEmpty() {
+        // Write your code here
+        if(head->next == tail) return true;
+        
+        return false;
+    }
+    
+    ListNode* head;
+    ListNode* tail;
+};
