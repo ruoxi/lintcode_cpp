@@ -1,0 +1,72 @@
+Implement Queue by Linked List
+
+ Description
+ Notes
+ Testcase
+ Judge
+Implement a Queue by linked list. Support the following basic methods:
+
+enqueue(item). Put a new item in the queue.
+dequeue(). Move the first item out of the queue, return it.
+Have you met this question in a real interview? Yes
+Example
+enqueue(1)
+enqueue(2)
+enqueue(3)
+dequeue() // return 1
+enqueue(4)
+dequeue() // return 2
+
+
+class Queue {
+public:
+
+    class ListNode
+    {
+    public:
+        int val;
+        ListNode* prev;
+        ListNode* next;
+        ListNode(int v)
+        :val(v), prev(NULL), next(NULL){}
+    };
+    Queue() {
+        // do initialize if necessary
+        head = new ListNode(-1);
+        tail = new ListNode(-1);
+        head->next = tail;
+        tail->prev= head;
+    }
+
+    void enqueue(int item) {
+        // Write your code here
+        
+        ListNode* insert = new ListNode(item);
+        //add to tail
+        ListNode* prev = tail->prev;
+        prev->next = insert;
+        insert->prev = prev;
+        
+        insert->next = tail;
+        tail->prev = insert;
+    }
+
+    int dequeue() {
+        // Write your code here
+        //remove from head
+        
+        ListNode* remove = head->next;
+        
+        int res = remove->val;
+        
+        head->next = remove->next;
+        remove->next->prev = head;
+        
+        delete(remove);
+        return res;
+    }
+    
+    ListNode* head;
+    ListNode* tail;
+};
+	
