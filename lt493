@@ -1,0 +1,100 @@
+Implement Queue by Linked List II
+
+ Description
+ Notes
+ Testcase
+ Judge
+Implement a Queue by linked list. Provide the following basic methods:
+
+push_front(item). Add a new item to the front of queue.
+push_back(item). Add a new item to the back of the queue.
+pop_front(). Move the first item out of the queue, return it.
+pop_back(). Move the last item out of the queue, return it.
+Have you met this question in a real interview? Yes
+Example
+push_front(1)
+push_back(2)
+pop_back() // return 2
+pop_back() // return 1
+push_back(3)
+push_back(4)
+pop_front() // return 3
+pop_front() // return 4
+
+
+class Dequeue {
+public: 
+
+    class ListNode
+    {
+    public:
+        ListNode* prev;
+        ListNode* next;
+        int val;
+        ListNode(int v)
+        :val(v), prev(NULL),next(NULL) {}
+        
+    };
+    
+    Dequeue() {
+        // do initialize if necessary
+        head = new ListNode(-1);
+        tail = new ListNode(-1);
+        head->next = tail;
+        tail->prev = head;
+    }
+
+    void push_front(int item) {
+        // Write your code here
+        ListNode* insert = new ListNode(item);
+        ListNode* next = head->next;
+        head->next = insert;
+        insert->prev = head;
+        
+        insert->next = next;
+        next->prev = insert;
+    }
+
+    void push_back(int item) {
+        // Write your code here
+        
+        ListNode* insert = new ListNode(item);
+        ListNode* prev = tail->prev;
+        
+        prev->next = insert;
+        insert->prev = prev;
+        
+        insert->next = tail;
+        tail->prev = insert;
+    }
+
+    int pop_front() {
+        // Write your code here
+        
+        ListNode* remove = head->next;
+        int res =remove->val;
+        
+        head->next = remove->next;
+        remove->next->prev = head;
+        
+        delete(remove);
+        return res;
+    }
+
+    int pop_back() {
+        // Write your code here
+        
+        ListNode* remove = tail->prev;
+        int res = remove->val;
+        
+        tail->prev = remove->prev;
+        remove->prev->next = tail;
+        
+        delete(remove);
+        return res;
+    }
+    
+    ListNode* head;
+    ListNode* tail;
+};
+	
