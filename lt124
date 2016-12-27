@@ -1,0 +1,78 @@
+Longest Consecutive Sequence
+
+ Description
+ Notes
+ Testcase
+ Judge
+Given an unsorted array of integers, find the length of the longest consecutive elements sequence.
+
+Have you met this question in a real interview? Yes
+Clarification
+Your algorithm should run in O(n) complexity.
+
+Example
+Given [100, 4, 200, 1, 3, 2],
+The longest consecutive elements sequence is [1, 2, 3, 4]. Return its length: 4.
+
+//Runtime: O(n)
+//Space: O(n)
+
+
+class Solution {
+public:
+    /**
+     * @param nums: A list of integers
+     * @return an integer
+     */
+    int longestConsecutive(vector<int> &num) {
+        // write you code here
+        
+        //key is the number
+        //pair.first the numbers on the left, pairs.second is the numbers on the right
+        
+        if(num.empty()) return 0;
+        int n =num.size();
+        int res = 0;
+        unordered_map<int, pair<int, int>> table;
+        
+        for(int i = 0; i < n; i++)
+        {
+            if(table.find(num[i]) != table.end()) continue;
+            
+            //check its left and right
+            int left = 0;
+            int right = 0;
+            
+            //get how many numbers are on the left side
+            if(table.find(num[i]-1) != table.end())
+            {
+                left = table[num[i]-1].first+1;
+            }
+            
+            if(table.find(num[i]+1) != table.end())
+            {
+                right = table[num[i]+1].second+1;
+            }
+            
+            //now update the leftmost and rightmost boundary
+            int left_boundary = num[i]-left;
+            int right_boundary = num[i]+right;
+            if(left>0)
+            {
+                table[left_boundary].second = right_boundary - left_boundary;
+            }
+            
+            if(right > 0)
+            {
+                table[right_boundary].first = right_boundary - left_boundary;
+            }
+            
+            table[num[i]] = make_pair(left, right);
+            res = max(res, 1+left+right);
+        }
+        
+        return res;
+        
+        
+    }
+};
