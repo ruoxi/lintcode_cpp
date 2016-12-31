@@ -1,0 +1,142 @@
+Count of Smaller Number
+
+ Description
+ Notes
+ Testcase
+ Judge
+Give you an integer array (index from 0 to n-1, where n is the size of this array, value from 0 to 10000) and an query list. For each query, give you an integer, return the number of element in the array that are smaller than the given integer.
+
+ Notice
+
+We suggest you finish problem Segment Tree Build and Segment Tree Query II first.
+
+Have you met this question in a real interview? Yes
+Example
+For array [1,2,7,8,5], and queries [1,8,5], return [0,4,2]
+
+
+class Solution {
+public:
+   /**
+     * @param A: An integer array
+     * @return: The number of element in the array that 
+     *          are smaller that the given integer
+     */
+     
+    class SegmentTreeNode
+    {
+    public:
+        int start;
+        int end; 
+        int cnt;
+        SegmentTreeNode* left;
+        SegmentTreeNode* right;
+        SegmentTreeNode(int s, int e, int c)
+        :start(s), end(e), cnt(c), left(NULL), right(NULL) {}
+    };
+    
+    vector<int> countOfSmallerNumber(vector<int> &A, vector<int> &queries) {
+        // write your code here
+        if(A.empty()) return vector<int>(queries.size(), 0);
+        
+        //find max number in array
+        int n = A.size();
+        int end = 0;
+        int start = 0;
+        for(int i = 0; i < n; i++)
+        {
+            end = max(end, A[i]);
+            start = min(start, A[i]);
+        }
+        
+        SegmentTreeNode* root = buildSegTree(start, end);
+        
+        //now update this segment tree using values in A
+        for(int i = 0; i < n; i++)
+        {
+           update(root, A[i]); 
+        }
+        
+        
+        int m = queries.size();
+        vector<int> res;
+        for(int i = 0; i < m; i++)
+        {
+            int q = query(root, 0, queries[i]-1);
+            res.push_back(q);
+        }
+        
+        return res;
+        
+        
+    }
+    
+    int query(SegmentTreeNode* root, int qstart, int qend)
+    {
+        if(root == NULL || qstart > qend) return 0;
+        
+        //no overlap
+        if(root->start > qend || root->end < qstart)
+        {
+            return 0;
+        }
+        
+        //total overlap
+        if(qstart <= root->start && qend >= root->end)
+        {
+            return root->cnt;
+        }
+        
+        //partial overlap
+        int left = query(root->left, qstart, qend);
+        int right = query(root->right, qstart, qend);
+        
+        return left+right;
+    }
+    
+    
+    void update(SegmentTreeNode* root, int val)
+    {
+        if(root == NULL) return;
+        
+        //no overlap
+        if(root->end < val || root->start > val)
+        {
+            return;
+        }
+        
+        //total overlap
+        if(root->start == val && root->end == val)
+        {
+            root->cnt ++;
+            return;
+        }
+        
+        //partial overlap
+        update(root->left, val);
+        update(root->right, val);
+        
+        root->cnt = root->left->cnt + root->right->cnt;
+    }
+    
+    SegmentTreeNode* buildSegTree(int start, int end)
+    {
+        if(start > end) return NULL;
+        
+        if(start == end)
+        {
+            return new SegmentTreeNode(start, end, 0);
+        }
+        
+        int mid = start + (end-start)/2;
+        
+        SegmentTreeNode* left = buildSegTree(start, mid);
+        SegmentTreeNode* right = buildSegTree(mid+1, end);
+        
+        SegmentTreeNode* node = new SegmentTreeNode(start, end, 0);
+        
+        node->left = left;
+        node->right = right;
+        return node;
+    }
+};
