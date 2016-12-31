@@ -1,0 +1,109 @@
+Interval Sum
+
+ Description
+ Notes
+ Testcase
+ Judge
+Given an integer array (index from 0 to n-1, where n is the size of this array), and an query list. Each query has two integers [start, end]. For each query, calculate the sum number between index start and end in the given array, return the result list.
+
+ Notice
+
+We suggest you finish problem Segment Tree Build, Segment Tree Query and Segment Tree Modify first.
+
+Have you met this question in a real interview? Yes
+Example
+For array [1,2,7,8,5], and queries [(0,4),(1,2),(2,4)], return [23,9,20]
+
+
+/**
+ * Definition of Interval:
+ * classs Interval {
+ *     int start, end;
+ *     Interval(int start, int end) {
+ *         this->start = start;
+ *         this->end = end;
+ *     }
+ */
+class Solution { 
+public:
+    /**
+     *@param A, queries: Given an integer array and an query list
+     *@return: The result list
+     */
+    class SegmentTreeNode
+    {
+    public:
+        int start;
+        int end;
+        long long sum;
+        SegmentTreeNode* left;
+        SegmentTreeNode* right;
+        
+        SegmentTreeNode(int s, int e, long long val)
+        :start(s),end(e),sum(val),left(NULL),right(NULL) {}
+    };
+    
+    vector<long long> intervalSum(vector<int> &A, vector<Interval> &queries) {
+        // write your code here
+        
+        if(A.empty()) return vector<long long>();
+        
+        int n = A.size();
+        
+        SegmentTreeNode* root = buildSegTree(A, 0, n-1);
+        
+        //now start query
+        int m = queries.size();
+        vector<long long> res;
+        for(int i = 0; i < m; i++)
+        {
+            long long q = query(root, queries[i].start, queries[i].end);
+            res.push_back(q);   
+        }
+        
+        return res;
+    }
+    
+    long long query(SegmentTreeNode* root, int qstart, int qend)
+    {
+        if(root == NULL || qstart > qend) return 0;
+        
+        //no overlap
+        if(root->end < qstart || root->start > qend)
+        {
+            return 0;
+        }
+        
+        //total overlap
+        if(qstart <= root->start && qend >= root->end)
+        {
+            return root->sum;
+        }
+        
+        //partial overlap
+        long long left = query(root->left, qstart, qend);
+        long long right = query(root->right, qstart, qend);
+        return left+right;
+    }
+    
+    SegmentTreeNode* buildSegTree(vector<int>& A, int start, int end)
+    {
+        if(start > end) return NULL;
+        
+        if(start == end)
+        {
+            return new SegmentTreeNode(start, end, (long long)A[start]);
+        }
+        
+        int mid = start + (end-start)/2;
+        
+        SegmentTreeNode* left = buildSegTree(A, start, mid);
+        SegmentTreeNode* right = buildSegTree(A, mid+1, end);
+        
+        SegmentTreeNode* root = new SegmentTreeNode(start, end, left->sum + right->sum);
+        root->left = left;
+        root->right = right;
+        return root;
+        
+    }
+};
