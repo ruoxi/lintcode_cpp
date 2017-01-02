@@ -36,8 +36,8 @@ public:
         int n = nums.size();
         int start = 0, end = n-1;
         
-        //注意这里需要是<= 而不是=
-        while(start <= end)
+
+        while(start < end)
         {
             int pos = partition(nums, start, end);
             
@@ -55,7 +55,8 @@ public:
             }
         }
         
-        return -1;
+        //当start == end时，一定是找到了对应的pos
+        return start;
         
     }
     
