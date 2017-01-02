@@ -1,0 +1,93 @@
+Interleaving Positive and Negative Numbers
+
+ Description
+ Notes
+ Testcase
+ Judge
+Given an array with positive and negative integers. Re-range it to interleaving with positive and negative integers.
+
+ Notice
+
+You are not necessary to keep the original order of positive integers or negative integers.
+
+Have you met this question in a real interview? Yes
+Example
+Given [-1, -2, -3, 4, 5, 6], after re-range, it will be [-1, 5, -2, 4, -3, 6] or any other reasonable answer.
+
+
+//这道题要注意区分neg number 个数和positive个数
+//哪个个数多就应该以哪个开头结尾
+class Solution {
+public:
+    /**
+     * @param A: An integer array.
+     * @return: void
+     */
+    void rerange(vector<int> &A) {
+        // write your code here
+        if(A.empty()) return;
+        
+        int n = A.size();
+        
+        //partition array based on 0, <0 put 
+        //at beginning and >0 after 
+        //then rearrange
+        
+        int left = 0; 
+        int right = n-1;
+        int pivot = A[left];
+        while(left < right)
+        {
+            while(left < right && A[right] > 0)
+            {
+                right--;
+            }
+            
+            A[left] = A[right];
+            
+            while(left < right && A[left] < 0)
+            {
+                left++;
+            }
+            
+            A[right] = A[left];
+        }
+        
+        A[left] = pivot;
+        
+        //check if number of neg > number of pos
+        bool startPos = false;
+        
+        int endNeg = left;
+        //check start pos of positive number
+        if(pivot > 0)
+        {
+            endNeg--;
+        }
+        
+        if(n-endNeg-1 > endNeg+1)
+        {
+            startPos = true;
+        }
+        
+    
+        
+        left = 0, right = n-1;
+        
+        if(n%2 == 1 && startPos)
+        {
+            right--;
+        }
+        else if(n%2 == 1)
+        {
+            left++;
+        }
+        while(left < right)
+        {
+            swap(A[left], A[right]);
+            left +=2;
+            right -=2;
+        }
+        
+    }
+};
