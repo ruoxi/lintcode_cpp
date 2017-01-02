@@ -1,0 +1,57 @@
+Longest Substring Without Repeating Characters
+
+ Description
+ Notes
+ Testcase
+ Judge
+Given a string, find the length of the longest substring without repeating characters.
+
+Have you met this question in a real interview? Yes
+Example
+For example, the longest substring without repeating letters for "abcabcbb" is "abc", which the length is 3.
+
+For "bbbbb" the longest substring is "b", with the length of 1.
+
+
+//Runtime: O(n)
+//Space:O(1)
+
+class Solution {
+public:
+    /**
+     * @param s: a string
+     * @return: an integer 
+     */
+    int lengthOfLongestSubstring(string s) {
+        // write your code here
+        if(s.empty()) return 0;
+        if(s.length() == 1) return 1;
+        
+        int n = s.length();
+        
+        vector<int> dict(256, 0);
+        
+        int res = 0;
+        int j = 0;
+        
+        for(int i = 0; i < n; i++)
+        {
+            while(j < n && dict[s[j]] ==0)
+            {
+                dict[s[j]]++;
+                j++;
+            }
+
+            if(res < j-i)
+            {
+                res = j-i;
+            }
+            
+            //update dict[s[i]]
+            dict[s[i]]--;
+            
+        }
+        
+        return res;
+    }
+};
