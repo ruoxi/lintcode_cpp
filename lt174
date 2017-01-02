@@ -1,0 +1,78 @@
+Remove Nth Node From End of List
+
+ Description
+ Notes
+ Testcase
+ Judge
+Given a linked list, remove the nth node from the end of list and return its head.
+
+ Notice
+
+The minimum number of nodes in list is n.
+
+Have you met this question in a real interview? Yes
+Example
+Given linked list: 1->2->3->4->5->null, and n = 2.
+
+After removing the second node from the end, the linked list becomes 1->2->3->5->null.
+
+
+
+
+/**
+ * Definition of ListNode
+ * class ListNode {
+ * public:
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int val) {
+ *         this->val = val;
+ *         this->next = NULL;
+ *     }
+ * }
+ */
+class Solution {
+public:
+    /**
+     * @param head: The first node of linked list.
+     * @param n: An integer.
+     * @return: The head of linked list.
+     */
+    ListNode *removeNthFromEnd(ListNode *head, int n) {
+        // write your code here
+        
+        //use fast and slow pointer to find prev of nth node from the end
+        if(head == NULL) return NULL;
+
+        ListNode dummy(-1);
+        
+        dummy.next = head;
+        
+        ListNode* fast = &dummy;
+        ListNode* slow = &dummy;
+        
+        for(int i = 0; i < n && fast != NULL; i++)
+        {
+            fast = fast->next;
+        }
+        
+        if(fast == NULL) return NULL;
+        
+        while(fast->next != NULL)
+        {
+            fast = fast->next;
+            slow = slow->next;
+        }
+        
+        //now slow points to n-1th node from end
+        ListNode* remove = slow->next;
+        slow->next = remove->next;
+        delete(remove);
+        
+        
+        return dummy.next;
+
+    }
+};
+
+
