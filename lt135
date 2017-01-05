@@ -1,0 +1,74 @@
+Combination Sum
+
+ Description
+ Notes
+ Testcase
+ Judge
+Given a set of candidate numbers (C) and a target number (T), find all unique combinations in C where the candidate numbers sums to T.
+
+The same repeated number may be chosen from C unlimited number of times.
+
+
+
+For example, given candidate set 2,3,6,7 and target 7, 
+A solution set is: 
+[7] 
+[2, 2, 3] 
+
+ Notice
+
+All numbers (including target) will be positive integers.
+Elements in a combination (a1, a2, … , ak) must be in non-descending order. (ie, a1 ≤ a2 ≤ … ≤ ak).
+The solution set must not contain duplicate combinations.
+Have you met this question in a real interview? Yes
+Example
+given candidate set 2,3,6,7 and target 7, 
+A solution set is: 
+[7] 
+[2, 2, 3] 
+
+
+
+class Solution {
+public:
+    /**
+     * @param candidates: A list of integers
+     * @param target:An integer
+     * @return: A list of lists of integers
+     */
+    vector<vector<int> > combinationSum(vector<int> &candidates, int target) {
+        // write your code here
+        
+        if(candidates.empty()) return vector<vector<int>>();
+        
+        int n = candidates.size();
+        
+        sort(candidates.begin(), candidates.end());
+        vector<int> sol;
+        vector<vector<int>> res;
+        dfs(candidates, 0, target, sol, res);
+        return res;
+    }
+    
+    void dfs(vector<int>& candidates, int start, int target, vector<int>& sol, vector<vector<int>>& res)
+    {
+        if(target == 0)
+        {
+            res.push_back(sol);
+            return;
+        }
+        
+        for(int i = start; i < candidates.size(); i++)
+        {
+            if(i > start && candidates[i] == candidates[i-1]) continue;
+            
+            if(candidates[i] > target) return;
+            
+            sol.push_back(candidates[i]);
+            dfs(candidates, i, target-candidates[i], sol, res );
+            sol.pop_back();
+        }
+        
+        
+    }
+};
