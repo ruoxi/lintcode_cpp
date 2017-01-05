@@ -61,6 +61,7 @@ public:
         
     }
     
+    //这里需要注意sol不能pass by reference,因为最后的sol.pop_back()没有执行就return了
     void dfs(string start, string end, unordered_map<string, vector<string>>& graph,unordered_map<string, int>& distance, vector<string> sol, vector<vector<string>>& res)
     {
         sol.push_back(end);
@@ -110,11 +111,13 @@ public:
                     next[i] = 'a' + j;
                     
                     if(dict.find(next) == dict.end()) continue;
+                    //这里注意即使next已经visit过了，graph里还是要再存一遍
+                    //因为这里到同一个next的路径可能有很多种
                     graph[next].push_back(cur);
                     //cout << "cur=" << cur << "next=" << next << endl;
                     if(distance.find(next) != distance.end()) continue;
                     
-                    //这里为了保证之后从end 到start dfs可以回来，所以只需要存单项即可
+                    //distance只存最开始碰到的，即distance最小的时候
                     distance[next] = distance[cur]+1;
                     //cout << "cur=" << cur << "next=" << next << endl;
                     q.push(next);
