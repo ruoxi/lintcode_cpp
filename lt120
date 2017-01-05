@@ -1,0 +1,89 @@
+Word Ladder
+
+ Description
+ Notes
+ Testcase
+ Judge
+Given two words (start and end), and a dictionary, find the length of shortest transformation sequence from start to end, such that:
+
+Only one letter can be changed at a time
+Each intermediate word must exist in the dictionary
+ Notice
+
+Return 0 if there is no such transformation sequence.
+All words have the same length.
+All words contain only lowercase alphabetic characters.
+Have you met this question in a real interview? Yes
+Example
+Given:
+start = "hit"
+end = "cog"
+dict = ["hot","dot","dog","lot","log"]
+As one shortest transformation is "hit" -> "hot" -> "dot" -> "dog" -> "cog",
+return its length 5.
+
+//BFS
+//每一层是把当前的word中所有字母都替换一遍，看是否在dict中
+
+class Solution {
+public:
+    /**
+      * @param start, a string
+      * @param end, a string
+      * @param dict, a set of string
+      * @return an integer
+      */
+    int ladderLength(string start, string end, unordered_set<string> &dict) {
+        // write your code here
+        if(start == end) return 1;
+        
+        //shortest path: bfs
+        queue<string> q;
+        q.push(start);
+        dict.insert(end);
+        
+        unordered_set<string> visited;
+        visited.insert(start);
+        
+        int wl = start.length();
+        
+        int level = 0;
+        while(!q.empty())
+        {
+            level++;
+            int size = q.size();
+            
+            for(int i = 0; i < size; i++)
+            {
+                string cur = q.front();
+                q.pop();
+                if(cur == end)
+                {
+                    return level;
+                }
+                //cout << "cur=" << cur << endl;
+                for(int j = 0; j < wl; j++)
+                {
+                    char c = cur[j];
+                    
+                    for(int k = 0; k < 26; k++)
+                    {
+                        if(c == 'a'+k) continue;
+                        
+                        cur[j] = 'a' + k;
+                        //cout << "change cur[" << j << "] to " << cur << endl; 
+                        if(dict.find(cur) != dict.end() && visited.find(cur) == visited.end())
+                        {
+                            q.push(cur);
+                            visited.insert(cur);
+                            //cout << "push cur=" << cur << endl;
+                        }
+                    }
+                    cur[j] = c;
+                }
+            }
+        }
+        
+        return 0;
+    }
+};
