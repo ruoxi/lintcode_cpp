@@ -1,0 +1,57 @@
+String Permutation II
+
+ Description
+ Notes
+ Testcase
+ Judge
+Given a string, find all permutations of it without duplicates.
+
+Have you met this question in a real interview? Yes
+Example
+Given "abb", return ["abb", "bab", "bba"].
+
+Given "aabb", return ["aabb", "abab", "baba", "bbaa", "abba", "baab"].
+
+
+//Recursion
+
+class Solution {
+public:
+    /**
+     * @param str a string
+     * @return all permutations
+     */
+    vector<string> stringPermutation2(string& str) {
+        // Write your code here
+        
+        //其实跟permutation ii是一样的
+        sort(str.begin(), str.end());
+        int n = str.length();
+        vector<bool> visited(n, false);
+        string sol;
+        vector<string> res;
+        dfs(str, visited, sol, res);
+        return res;
+    }
+    
+    void dfs(string& str, vector<bool>& visited, string& sol, vector<string>& res)
+    {
+        if(sol.length() == str.length())
+        {
+            res.push_back(sol);
+            return;
+        }
+        
+        for(int i = 0; i < str.length(); i++)
+        {
+            if(visited[i]) continue;
+            if(i > 0 && str[i] == str[i-1] && !visited[i-1]) continue;
+            
+            sol += str[i];
+            visited[i] = true;
+            dfs(str, visited, sol, res);
+            sol.pop_back();
+            visited[i] = false;
+        }
+    }
+};
