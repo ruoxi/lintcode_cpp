@@ -1,0 +1,58 @@
+k Sum II
+
+ Description
+ Notes
+ Testcase
+ Judge
+Given n unique integers, number k (1<=k<=n) and target.
+
+Find all possible k integers where their sum is target.
+
+Have you met this question in a real interview? Yes
+Example
+Given [1,2,3,4], k = 2, target = 5. Return:
+
+[
+  [1,4],
+  [2,3]
+]
+
+
+class Solution {
+public:
+    /**
+     * @param A: an integer array.
+     * @param k: a positive integer (k <= length(A))
+     * @param target: a integer
+     * @return a list of lists of integer 
+     */
+    vector<vector<int> > kSumII(vector<int> A, int k, int target) {
+        // write your code here
+        
+        vector<int> sol;
+        vector<vector<int>> res;
+        dfs(A, 0, k, target, sol, res);
+        
+        return res;
+    }
+    
+    void dfs(vector<int>& A, int idx, int k, int target, vector<int>& sol, vector<vector<int>>&  res)
+    {
+        if(k == 0 && target == 0)
+        {
+            res.push_back(sol);
+            return;
+        }
+        
+        for(int i = idx; i < A.size(); i++)
+        {
+            if(A[i] > target) break;
+            
+            sol.push_back(A[i]);
+            
+            //注意这里只能是k-1,不能是k--
+            dfs(A, i+1, k-1, target - A[i], sol, res);
+            sol.pop_back();
+        }
+    }
+};
