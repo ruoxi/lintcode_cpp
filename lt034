@@ -1,0 +1,74 @@
+N-Queens II
+
+ Description
+ Notes
+ Testcase
+ Judge
+Follow up for N-Queens problem.
+
+Now, instead outputting board configurations, return the total number of distinct solutions.
+
+Have you met this question in a real interview? Yes
+Example
+For n=4, there are 2 distinct solutions.
+
+
+
+
+class Solution {
+public:
+    /**
+     * Calculate the total number of distinct N-Queen solutions.
+     * @param n: The number of queens.
+     * @return: The total number of distinct solutions.
+     */
+    int totalNQueens(int n) {
+        // write your code here
+        
+        if(n == 0) return 0;
+        if(n == 1) return 1;
+        
+        int res = 0;
+        
+        vector<int> pos;
+        dfs(n, 0, pos, res);
+        return res;
+        
+    }
+    
+    void dfs(int n, int row, vector<int>& pos, int& res)
+    {
+        if(row == n)
+        {
+            res++;
+            return;
+        }
+        
+        for(int i = 0; i < n; i++)
+        {
+            if(!isValid(pos, i)) continue;
+            
+            pos.push_back(i);
+            dfs(n, row+1, pos, res);
+            pos.pop_back();
+        }
+    }
+    
+    bool isValid(vector<int>& pos, int col)
+    {
+        if(pos.empty()) return true;
+        
+        int n = pos.size();
+        
+        for(int i = 0; i < n; i++)
+        {
+            if(pos[i] == col) return false;
+            
+            if(pos[i] + i == col + n) return false;
+            
+            if(pos[i] - i == col - n) return false;
+        }
+        
+        return true;
+    }
+};
