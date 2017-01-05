@@ -1,0 +1,60 @@
+/**
+ * Definition for undirected graph.
+ * struct UndirectedGraphNode {
+ *     int label;
+ *     vector<UndirectedGraphNode *> neighbors;
+ *     UndirectedGraphNode(int x) : label(x) {};
+ * };
+ */
+ 
+ //Runtime: O(v+e)
+ 
+ 
+class Solution {
+public:
+    /**
+     * @param node: A undirected graph node
+     * @return: A undirected graph node
+     */
+    UndirectedGraphNode *cloneGraph(UndirectedGraphNode *node) {
+        // write your code here
+        if(node == NULL) return NULL;
+        
+        unordered_map<UndirectedGraphNode*, UndirectedGraphNode*> cloneMap;
+        
+        queue<UndirectedGraphNode*> q;
+        q.push(node);
+        cloneMap[node] = new UndirectedGraphNode(node->label);
+        
+        //first pass use bfs to get all the nodes
+        while(!q.empty())
+        {
+            UndirectedGraphNode* cur = q.front();
+            q.pop();
+            
+            for(auto neigh : cur->neighbors)
+            {
+                if(cloneMap.find(neigh) != cloneMap.end())
+                {
+                    continue;
+                }
+                
+                cloneMap[neigh] = new UndirectedGraphNode(neigh->label);
+                q.push(neigh);
+            }
+        }
+        
+        //now clone the edge
+        for(auto nodePair : cloneMap)
+        {
+            for(auto neigh : nodePair.first->neighbors)
+            {
+                nodePair.second->neighbors.push_back(cloneMap[neigh]);
+            }
+        }
+        
+        return cloneMap[node];
+        
+        
+    }
+};
