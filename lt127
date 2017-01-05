@@ -1,0 +1,106 @@
+Topological Sorting
+
+ Description
+ Notes
+ Testcase
+ Judge
+Given an directed graph, a topological order of the graph nodes is defined as follow:
+
+For each directed edge A -> B in graph, A must before B in the order list.
+The first node in the order can be any node in the graph with no nodes direct to it.
+Find any topological order for the given graph.
+
+ Notice
+
+You can assume that there is at least one topological order in the graph.
+
+Have you met this question in a real interview? Yes
+Clarification
+Learn more about representation of graphs
+
+Example
+For graph as follow:
+
+picture
+
+The topological order can be:
+
+[0, 1, 2, 3, 4, 5]
+[0, 2, 3, 1, 5, 4]
+...
+
+/**
+ * Definition for Directed graph.
+ * struct DirectedGraphNode {
+ *     int label;
+ *     vector<DirectedGraphNode *> neighbors;
+ *     DirectedGraphNode(int x) : label(x) {};
+ * };
+ */
+ 
+//Topological sort:
+// 对于directed graph上每一个点统计他的indgree
+// 从indegree为0的点出发，bfs的visit 所有点， 对于每一个node, iterate its neighbor and decrease neighbor's indegree
+// if neighbor's indegree == 0 then added it to queue
+
+class Solution {
+public:
+    /**
+     * @param graph: A list of Directed graph node
+     * @return: Any topological order for the given graph.
+     */
+    vector<DirectedGraphNode*> topSort(vector<DirectedGraphNode*> graph) {
+        // write your code here
+        //find the indegree of all the nodes
+        //start from the nodes with 0 indegree
+        if(graph.empty()) return vector<DirectedGraphNode*>();
+        
+        unordered_map<DirectedGraphNode*, int> indegree;
+        
+        int n = graph.size();
+        for(int i = 0; i < n; i++)
+        {
+            indegree[graph[i]] = 0;
+        }
+        
+        for(int i = 0; i < n; i++)
+        {
+            DirectedGraphNode* cur = graph[i];
+            
+            for(auto neigh : cur->neighbors)
+            {
+                indegree[neigh]++;
+            }
+        }
+        
+        //go through the indegree map to find 0 indegree nodes
+        queue<DirectedGraphNode*> q;
+        for(auto node : indegree)
+        {
+            if(node.second == 0)
+            {
+                q.push(node.first);
+            }
+        }
+        
+        vector<DirectedGraphNode*> res;
+        while(!q.empty())
+        {
+            DirectedGraphNode* cur = q.front();
+            q.pop();
+            
+            res.push_back(cur);
+            for(auto neigh : cur->neighbors)
+            {
+                indegree[neigh]--;
+                if(indegree[neigh] == 0)
+                {
+                    q.push(neigh);
+                }
+            }
+        }
+        
+        return res;
+        
+    }
+};
