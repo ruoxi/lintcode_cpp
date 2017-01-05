@@ -1,0 +1,89 @@
+Six Degrees
+
+ Description
+ Notes
+ Testcase
+ Judge
+Six degrees of separation is the theory that everyone and everything is six or fewer steps away, by way of introduction, from any other person in the world, so that a chain of "a friend of a friend" statements can be made to connect any two people in a maximum of six steps.
+
+Given a friendship relations, find the degrees of two people, return -1 if they can not been connected by friends of friends.
+
+Have you met this question in a real interview? Yes
+Example
+Gien a graph:
+
+1------2-----4
+ \          /
+  \        /
+   \--3--/
+{1,2,3#2,1,4#3,1,4#4,2,3} and s = 1, t = 4 return 2
+
+Gien a graph:
+
+1      2-----4
+             /
+           /
+          3
+{1#2,4#3,4#4,2,3} and s = 1, t = 4 return -1
+
+
+/**
+ * Definition for undirected graph.
+ * struct UndirectedGraphNode {
+ *     int label;
+ *     vector<UndirectedGraphNode *> neighbors;
+ *     UndirectedGraphNode(int x) : label(x) {};
+ * };
+ */
+class Solution {
+public:
+    /**
+     * @param graph a list of Undirected graph node
+     * @param s, t two Undirected graph nodes
+     * @return an integer
+     */
+    int sixDegrees(vector<UndirectedGraphNode*> graph,
+                   UndirectedGraphNode* s,
+                   UndirectedGraphNode* t) {
+        // Write your code here
+        //BFS
+        if(s==t) return 0;
+        
+        unordered_map<UndirectedGraphNode*, bool> visited;
+        
+        for(int i = 0; i <graph.size(); i++)
+        {
+            visited[graph[i]] = false;
+        }
+        
+        queue<UndirectedGraphNode*> q;
+        q.push(s);
+        int level = 0;
+        
+        while(!q.empty())
+        {
+            int size = q.size();
+            
+            for(int i = 0; i < size; i++)
+            {
+                UndirectedGraphNode* cur = q.front();
+                q.pop();
+                
+                if(cur == t) return level;
+                
+                for(auto node : cur->neighbors)
+                {
+                    if(!visited[node])
+                    {
+                        q.push(node);
+                        visited[node] = true;
+                    }
+                }
+            }
+            level++;
+            
+        }
+        return -1;
+    }
+    
+};
