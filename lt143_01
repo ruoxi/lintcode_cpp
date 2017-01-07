@@ -1,0 +1,74 @@
+Sort Colors II
+
+ Description
+ Notes
+ Testcase
+ Judge
+Given an array of n objects with k different colors (numbered from 1 to k), sort them so that objects of the same color are adjacent, with the colors in the order 1, 2, ... k.
+
+ Notice
+
+You are not suppose to use the library's sort function for this problem.
+
+Have you met this question in a real interview? Yes
+Example
+Given colors=[3, 2, 2, 1, 4], k=4, your code should sort colors in-place to [1, 2, 2, 3, 4].
+
+//Bucket sort Runtime O(n)
+//Space: O(1)
+
+class Solution{
+public:
+    /**
+     * @param colors: A list of integer
+     * @param k: An integer
+     * @return: nothing
+     */    
+    //bucket sort
+    //colors中一共有1...k， 把他们当成0....k-1 bucket, 共k个
+    //num = colors[i], num-1 is the corresponding bucket it should be in
+    //if color[nums-1] is a positive integer, we swap it to colors[i] so that we can keep finding bucket for x =color[num-1]
+    //then we mark color[num-1] as -1 means num appear once in the array
+    // if color[num-1] <=0, means there already a num occured, we just need to decrease the number to mark how many times num has appeared in the array
+    //Note: when calculate the result, start from the end to make sure the values are not overwritten
+    void sortColors2(vector<int> &colors, int k) {
+        // write your code here
+        if(colors.empty()) return;
+        int n = colors.size();
+        
+        for(int i = 0; i < n; i++)
+        {
+            while(colors[i] >0)
+            {
+                int num = colors[i];
+                //bucket number is num-1
+                if(colors[num-1] > 0)
+                {
+                    colors[i] = colors[num-1];
+                    colors[num-1] = -1; //表示num出现过一次
+                }
+                else
+                {
+                    //这里说明num-1这个bucket里已经放过数字了，
+                    //或者这个bucket 已经是空的
+                    colors[num-1]--;
+                    colors[i] = 0; //表示这个位置已经处理完，bucket是空的
+                }
+            }
+        }
+        
+        int pos = n-1;
+        for(int i = n-1; i>=0; i--)
+        {
+           int cnt = colors[i];
+            while(cnt < 0)
+            {
+                colors[pos] = i+1;
+                cnt++;
+                pos--;
+            }
+        }
+        
+        
+    }
+};
