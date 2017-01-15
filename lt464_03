@@ -1,0 +1,80 @@
+Sort Integers II
+
+ Description
+ Notes
+ Testcase
+ Judge
+Given an integer array, sort it in ascending order. Use quick sort, merge sort, heap sort or any O(nlogn) algorithm.
+
+Have you met this question in a real interview? Yes
+Example
+Given [3, 2, 1, 4, 5], return [1, 2, 3, 4, 5].
+
+
+
+
+class Solution {
+public:
+    /**
+     * @param A an integer array
+     * @return void
+     */
+    //heap sort
+    //heapify first, maxheap
+    //each time get the top element
+    //and heapify the rest
+    void sortIntegers2(vector<int>& A) {
+        // Write your code here
+        if(A.empty()) return;
+        int n = A.size();
+        
+        for(int i = (n-1)/2; i>=0; i--)
+        {
+            siftDown(A, i, n-1);
+        }
+        
+        int end = n-1;
+        while(end >0)
+        {
+            //把最大的放到最后
+            swap(A[0], A[end]);
+            end--;
+            
+            //现在尝试sift down,把最大的换上了，注意此时array size由n变成了n-1
+            siftDown(A, 0, end);
+        }
+        
+    }
+    
+    
+    void siftDown(vector<int>& A, int idx, int end)
+    {
+        int maxv = A[idx];
+        
+        int left = idx*2+1;
+        int right = idx*2+2;
+        
+        if(left > end) return;
+        int child = idx;
+        if(A[left] > maxv)
+        {
+            child = left;
+            maxv = A[left];
+        }
+        
+        if(right <= end && A[right] > maxv)
+        {
+            child = right;
+            maxv = A[right];
+        }
+        
+        if(child == idx) return;
+        
+        swap(A[idx], A[child]);
+        
+        siftDown(A, child, end);
+        
+    }
+    
+
+};
