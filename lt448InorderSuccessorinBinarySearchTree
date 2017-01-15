@@ -33,6 +33,14 @@ return node 3.
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
+ 
+ 
+//利用bst的特性来决定走左子树还是右子树
+//要注意的是，当找到target, 如果target->right不是空，就应该return left most child of target->right
+//如果target->right是空，那么就要return prev
+//这个prev就是inorder顺序下下一个要打印的node
+//prev在我们向左走的时候需要update,因为表示当前的node还没有打印
+//如果向右走的时候则不需要update,因为当前node已经打印完，prev需要指向当前node的parent
 class Solution {
 public:
     TreeNode* inorderSuccessor(TreeNode* root, TreeNode* p) {
