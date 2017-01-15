@@ -1,0 +1,75 @@
+Sort Integers II
+
+ Description
+ Notes
+ Testcase
+ Judge
+Given an integer array, sort it in ascending order. Use quick sort, merge sort, heap sort or any O(nlogn) algorithm.
+
+Have you met this question in a real interview? Yes
+Example
+Given [3, 2, 1, 4, 5], return [1, 2, 3, 4, 5].
+
+
+class Solution {
+public:
+    /**
+     * @param A an integer array
+     * @return void
+     */
+    //quick sort
+    void sortIntegers2(vector<int>& A) {
+        // Write your code here
+        
+        if(A.empty()) return;
+        
+        int n = A.size();
+
+        //每次选一个pivot,把<pivot挪到他前面,>=pivot挪到他后面
+        //把数组分成了两份，接着各自做quick sort
+        
+        helper(A, 0, n-1);
+        
+    }
+    
+    void helper(vector<int>& A, int start, int end)
+    {
+      //注意这里是start > end
+        if(start > end) return;
+        
+        int pos = partition(A, start, end);
+        
+        helper(A, start, pos-1);
+        helper(A, pos+1, end);
+    }
+    
+    int partition(vector<int>& A, int start, int end)
+    {
+        int pivot = A[start];
+        
+        int left = start, right = end;
+        while(left < right)
+        {
+            while(left < right && A[right] >= pivot)
+            {
+                right--;
+            }
+            
+            A[left] = A[right];
+            
+            while(left < right && A[left] < pivot)
+            {
+                left++;
+            }
+            
+            A[right] = A[left];
+        }
+        
+        A[left] = pivot;
+        
+        return left;
+    }
+    
+
+    
+};
