@@ -1,0 +1,91 @@
+Sort Integers II
+
+ Description
+ Notes
+ Testcase
+ Judge
+Given an integer array, sort it in ascending order. Use quick sort, merge sort, heap sort or any O(nlogn) algorithm.
+
+Have you met this question in a real interview? Yes
+Example
+Given [3, 2, 1, 4, 5], return [1, 2, 3, 4, 5].
+
+
+class Solution {
+public:
+    /**
+     * @param A an integer array
+     * @return void
+     */
+    //merge sort
+    void sortIntegers2(vector<int>& A) {
+        // Write your code here
+        
+        if(A.empty()) return;
+        
+        int n = A.size();
+        
+        helper(A, 0, n-1);
+    }
+    
+    
+    void helper(vector<int>& A, int start, int end)
+    {
+        if(start == end) return;
+        
+        int mid = start + (end-start)/2;
+        
+        helper(A, start, mid);
+        helper(A, mid+1, end);
+        
+        
+        merge(A, start, mid+1, end);
+        
+    }
+    
+    void merge(vector<int>& A, int start1, int start2, int end)
+    {
+        vector<int> tmp(end-start1+1, 0);
+        
+        int idx = 0;
+        int s1 = start1, s2 = start2;
+        while(s1 < start2&& s2 <=end )
+        {
+            if(A[s1] <A[s2])
+            {
+                tmp[idx] = A[s1];
+                idx++;
+                s1++;
+            }
+            else
+            {
+                tmp[idx] = A[s2];
+                idx++;
+                s2++;
+            }
+        }
+        
+        while(s1 < start2)
+        {
+            tmp[idx] = A[s1];
+            s1++;
+            idx++;
+        }
+        while(s2 <= end)
+        {
+            tmp[idx] = A[s2];
+            s2++;
+            idx++;
+        }
+        
+        idx = 0;
+        for(int i = start1; i <=end; i++)
+        {
+            A[i] = tmp[idx];
+            idx++;
+        }
+        
+    }
+    
+    
+};
