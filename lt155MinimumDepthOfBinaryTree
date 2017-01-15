@@ -25,6 +25,8 @@ The minimum depth is 2.
  *     }
  * }
  */
+ 
+//这里要注意甄别root->left != NULL && root->right == NULL的情况
 class Solution {
 public:
     /**
