@@ -1,0 +1,72 @@
+Expression Expand
+
+ Description
+ Notes
+ Testcase
+ Judge
+Given an expression s includes numbers, letters and brackets. Number represents the number of repetitions inside the brackets(can be a string or another expression)．Please expand expression to be a string.
+
+Have you met this question in a real interview? Yes
+Example
+s = abc3[a] return abcaaa
+s = 3[abc] return abcabcabc
+s = 4[ac]dy, return acacacacdy
+s = 3[2[ad]3[pf]]xyz, return adadpfpfpfadadpfpfpfadadpfpfpfxyz
+
+
+class Solution {
+public:
+    /**
+     * @param s  an expression includes numbers, letters and brackets
+     * @return a string
+     */
+    string expressionExpand(string& s) {
+        // Write your code here
+        
+        if(s.empty()) return "";
+        
+        stack<string> stk;
+        stack<int> cnts;
+        
+        string cur = "";
+        for(int i = 0; i < s.length(); )
+        {
+            if(isdigit(s[i]))
+            {
+                int count = 0;
+                while(s[i] != '[')
+                {
+                    count = count*10 + s[i]-'0';
+                    i++;
+                }
+                cnts.push(count);
+            }
+            else if(s[i] == '[')
+            {
+                stk.push(cur);
+                cur = "";
+                i++;
+            }
+            else if(isalpha(s[i]))
+            {
+                cur += s[i];
+                i++;
+            }
+            else if(s[i] == ']')
+            {
+                string tmpRes = stk.top();
+                stk.pop();
+                
+                int times = cnts.top(); cnts.pop();
+                for(int j = 0; j < times; j++)
+                {
+                    tmpRes += cur;
+                }
+                cur = tmpRes;
+                i++;
+            }
+        }
+        
+        return cur;
+    }
+};
