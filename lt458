@@ -1,0 +1,53 @@
+Last Position of Target
+
+ Description
+ Notes
+ Testcase
+ Judge
+Find the last position of a target number in a sorted array. Return -1 if target does not exist.
+
+Have you met this question in a real interview? Yes
+Example
+Given [1, 2, 2, 4, 5, 5].
+
+For target = 2, return 2.
+
+For target = 5, return 5.
+
+For target = 6, return -1.
+
+
+
+class Solution {
+public:
+    /**
+     * @param A an integer array sorted in ascending order
+     * @param target an integer
+     * @return an integer
+     */
+    int lastPosition(vector<int>& A, int target) {
+        // Write your code here
+        
+        if(A.empty()) return -1;
+        
+        int start = 0, end = A.size()-1;
+        
+        while(start + 1 < end)
+        {
+            int mid = start + (end - start)/2;
+            
+            if(A[mid] <= target)
+            {
+                start = mid;
+            }
+            else
+            {
+                end = mid;
+            }
+        }
+        
+        if(A[end] == target) return end;
+        if(A[start] == target) return start;
+        return -1;
+    }
+};
