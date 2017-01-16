@@ -1,0 +1,92 @@
+K Closest Numbers In Sorted Array
+
+ Description
+ Notes
+ Testcase
+ Judge
+Given a target number, a non-negative integer k and an integer array A sorted in ascending order, find the k closest numbers to target in A, sorted in ascending order by the difference between the number and target. Otherwise, sorted in ascending order by number if the difference is same.
+
+Have you met this question in a real interview? Yes
+Example
+Given A = [1, 2, 3], target = 2 and k = 3, return [2, 1, 3].
+
+Given A = [1, 4, 6, 8], target = 3 and k = 3, return [4, 1, 6].
+
+
+class Solution {
+public:
+    /**
+     * @param A an integer array
+     * @param target an integer
+     * @param k a non-negative integer
+     * @return an integer array
+     */
+    //first find the closet number to target in array A
+    //then expand from this closet number
+    vector<int> kClosestNumbers(vector<int>& A, int target, int k) {
+        // Write your code here
+        
+        if(A.empty() || k==0) return vector<int>();
+        if(k > A.size()) return A;
+        
+        int closest = findClosest(A, target);
+        int diff = abs(target - A[closest]);
+        int n = A.size();
+        vector<int> res;
+        
+        
+        int l = closest, r = closest+1;
+        for(int i = 0;i < k; i++)
+        {
+            if(l <0)
+            {
+                res.push_back(A[r]);
+                r++;
+            }
+            else if(r >=n)
+            {
+                res.push_back(A[l]);
+                l--;
+            }
+            else
+            {
+                if(abs(target-A[l]) <= abs(target-A[r]))
+                {
+                    res.push_back(A[l]);
+                    l--;
+                }
+                else
+                {
+                    res.push_back(A[r]);
+                    r++;
+                }
+            }
+        }
+        
+        return res;
+        
+        
+    }
+    
+    int findClosest(vector<int>& A, int target)
+    {
+        int start = 0 , end = A.size()-1;
+        
+        while(start + 1 < end)
+        {
+            int mid = start + (end - start)/2;
+  
+            if(A[mid] < target)
+            {
+                start = mid;
+            }
+            else
+            {
+                end = mid;
+            }
+        }
+        
+        if(abs(A[start]-target) <= abs(A[end]- target)) return start;
+        return end;
+    }
+};
