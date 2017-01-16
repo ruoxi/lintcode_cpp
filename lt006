@@ -1,0 +1,61 @@
+Merge Two Sorted Arrays
+
+ Description
+ Notes
+ Testcase
+ Judge
+Merge two given sorted integer array A and B into a new sorted integer array.
+
+Have you met this question in a real interview? Yes
+Example
+A=[1,2,3,4]
+
+B=[2,4,5,6]
+
+return [1,2,2,3,4,4,5,6]
+
+
+class Solution {
+public:
+    /**
+     * @param A and B: sorted integer array A and B.
+     * @return: A new sorted integer array
+     */
+    vector<int> mergeSortedArray(vector<int> &A, vector<int> &B) {
+        // write your code here
+
+        int lenA = A.size(), lenB = B.size();
+        int i = 0, j =0, k = 0;
+        
+        vector<int> res(lenA+lenB, 0);
+        for(; i < lenA && j < lenB; k++)
+        {
+            if(A[i] < B[j])
+            {
+                res[k] = A[i];
+                i++;
+            }
+            else
+            {
+                res[k] = B[j];
+                j++;
+            }
+        }
+        
+        while(i < lenA)
+        {
+            res[k] = A[i];
+            i++;
+            k++;
+        }
+        
+        while(j < lenB)
+        {
+            res[k] = B[j];
+            j++;
+            k++;
+        }
+        
+        return res;
+    }
+};
