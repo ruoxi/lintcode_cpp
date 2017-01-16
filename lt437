@@ -61,7 +61,7 @@ public:
             for(int j = i; j <=n; j++)
             {
                 dp[i][j] = INT_MAX;
-                for(int l = 0; l <= j; l++)
+                for(int l = 0; l < j; l++)
                 {
                     dp[i][j] = min(dp[i][j], max(dp[i-1][l], sum[j]-sum[l]));
                 }
