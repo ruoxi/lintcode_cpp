@@ -1,0 +1,52 @@
+Maximum Number in Mountain Sequence
+
+ Description
+ Notes
+ Testcase
+ Judge
+Given a mountain sequence of n integers which increase firstly and then decrease, find the mountain top.
+
+Have you met this question in a real interview? Yes
+Example
+Given nums = [1, 2, 4, 8, 6, 3] return 8
+Given nums = [10, 9, 8, 7], return 10
+
+
+
+
+class Solution {
+public:
+    /**
+     * @param nums a mountain sequence which increase firstly and then decrease
+     * @return then mountain top
+     */
+    int mountainSequence(vector<int>& nums) {
+        // Write your code here
+        
+        if(nums.empty()) return 0;
+        
+        int n = nums.size();
+        
+        int start = 0, end = n-1;
+        
+        while(start + 1 < end)
+        {
+            int mid = start + (end - start)/2;
+            
+            if(nums[mid] > nums[mid-1] && nums[mid] > nums[mid+1])
+                return nums[mid];
+                
+            if(nums[mid] < nums[mid-1])
+            {
+                end = mid;
+            }
+            else
+            {
+                start = mid;
+            }
+        }
+        
+        if(nums[start] < nums[end]) return nums[end];
+        return nums[start];
+    }
+};
