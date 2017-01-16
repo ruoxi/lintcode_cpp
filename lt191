@@ -1,0 +1,49 @@
+Maximum Product Subarray
+
+ Description
+ Notes
+ Testcase
+ Judge
+Find the contiguous subarray within an array (containing at least one number) which has the largest product.
+
+Have you met this question in a real interview? Yes
+Example
+For example, given the array [2,3,-2,4], the contiguous subarray [2,3] has the largest product = 6.
+
+
+class Solution {
+public:
+    /**
+     * @param nums: a vector of integers
+     * @return: an integer
+     */
+    //state: global[i]表示前i个数中的max product
+    //       localmin[i]表示前i个数中以nums[i-1]结尾的min product
+    //       localmax[i]表示前i个数中以nums[i-1]结尾的max product
+    int maxProduct(vector<int>& nums) {
+        // write your code here
+        
+        if(nums.empty()) return -1;
+        
+        int n = nums.size();
+        
+        vector<int> global(n+1, 0);
+        vector<int> localmin(n+1, 0);
+        vector<int> localmax(n+1, 0);
+        
+        global[0] = INT_MIN;
+        localmin[0] = 1;
+        localmax[0] = 1;
+        
+        for(int i = 1; i <=n; i++)
+        {
+            localmax[i] = max(localmax[i-1]*nums[i-1], max(localmin[i-1]*nums[i-1], nums[i-1]));
+            
+            localmin[i] = min(localmin[i-1]*nums[i-1], min(localmax[i-1]*nums[i-1], nums[i-1]));
+            
+            global[i] = max(global[i-1], localmax[i]);
+        }
+        
+        return global[n];
+    }
+};
