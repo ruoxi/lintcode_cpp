@@ -1,0 +1,49 @@
+Coins in a Line
+
+ Description
+ Notes
+ Testcase
+ Judge
+There are n coins in a line. Two players take turns to take one or two coins from right side until there are no more coins left. The player who take the last coin wins.
+
+Could you please decide the first play will win or lose?
+
+Have you met this question in a real interview? Yes
+Example
+n = 1, return true.
+
+n = 2, return true.
+
+n = 3, return false.
+
+n = 4, return true.
+
+n = 5, return true.
+
+
+class Solution {
+public:
+    /**
+     * @param n: an integer
+     * @return: a boolean which equals to true if the first player will win
+     */
+    //state: dp[i]表示还剩i个coin,第一个人是否能赢
+     bool firstWillWin(int n) {
+        // write your code here
+        vector<bool> dp(n+1, false);
+        
+        dp[1] = true;
+        dp[2] = true;
+        dp[3] = false;
+        
+        for(int i = 4; i <=n; i++)
+        {
+            if(!dp[i-1] || !dp[i-2])
+            {
+                dp[i] = true;
+            }
+        }
+        
+        return dp[n];
+    }
+};
