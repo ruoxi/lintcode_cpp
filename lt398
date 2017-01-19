@@ -1,0 +1,78 @@
+Longest Increasing Continuous subsequence II
+
+ Description
+ Notes
+ Testcase
+ Judge
+Give you an integer matrix (with row size n, column size m)，find the longest increasing continuous subsequence in this matrix. (The definition of the longest increasing continuous subsequence here can start at any row or column and go up/down/right/left any direction).
+
+Have you met this question in a real interview? Yes
+Example
+Given a matrix:
+
+[
+  [1 ,2 ,3 ,4 ,5],
+  [16,17,24,23,6],
+  [15,18,25,22,7],
+  [14,19,20,21,8],
+  [13,12,11,10,9]
+]
+return 25
+
+
+
+
+class Solution {
+public:
+    /**
+     * @param A an integer matrix
+     * @return  an integer
+     */
+    //state: dp[i][j]means the longest increasing continuous subsequnce ends at i, j
+    //function: dp[i][j] = max(dp[nx][ny]) + 1, nx = i + dx[k], ny = j + dy[k]
+    //initialization dp[i][j] = 0
+    //return max(dp[i][j])
+    int longestIncreasingContinuousSubsequenceII(vector<vector<int>>& A) {
+        // Write your code here
+        
+        if(A.empty() || A.at(0).empty()) return 0;
+        
+        int n = A.size();
+        int m = A.at(0).size();
+        
+        vector<vector<int>> dp(n, vector<int>(m, 0));
+        int res = 0;
+        for(int i = 0; i < n; i++)
+        {
+            for(int j = 0; j <m; j++)
+            {
+                res = max(res, dfs(A, dp, i, j));
+            }
+        }
+        
+        return res;
+    }
+    
+    vector<int> dx = {1, -1, 0, 0};
+    vector<int> dy = {0, 0, 1, -1};
+    int dfs(vector<vector<int>>& A, vector<vector<int>>& dp, int cx, int cy)
+    {
+        if(dp[cx][cy] >0) return dp[cx][cy];
+        
+        int n = A.size();
+        int m = A.at(0).size();
+        for(int i = 0; i <4; i++)
+        {
+            int nx = cx + dx[i];
+            int ny = cy + dy[i];
+            
+            if(nx >=0 && nx <n && ny >=0 && ny < m && A[nx][ny] > A[cx][cy])
+            {
+                dp[cx][cy] = max(dp[cx][cy], dfs(A, dp, nx, ny));
+            }
+        }
+        
+        dp[cx][cy]++;
+        return dp[cx][cy];
+    }
+};
