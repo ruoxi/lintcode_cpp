@@ -1,0 +1,90 @@
+Post Office Problem
+
+ Description
+ Notes
+ Testcase
+ Judge
+On one line there are n houses. Give you an array of integer means the the position of each house. Now you need to pick k position to build k post office, so that the sum distance of each house to the nearest post office is the smallest. Return the least possible sum of all distances between each village and its nearest post office.
+
+Have you met this question in a real interview? Yes
+Example
+Given array a = [1,2,3,4,5], k = 2.
+return 3.
+
+
+
+
+class Solution {
+public:
+    /**
+     * @param A an integer array
+     * @param k an integer
+     * @return an integer
+     */
+    //state: dp[i][j]表示前i个village中建立j个post office的min distance sum
+    //function: dp[i][j] = min{dp[l][j-1] + [l到j-1个中建一个post office的min distance]}
+    int postOffice(vector<int>& A, int k) {
+        // Write your code here
+        if(A.empty() || k >= A.size()) return 0;
+        
+        
+        int n = A.size();
+        sort(A.begin(), A.end());
+        //dist[i][j]表示A[i...j]中建立一个邮局的min distance
+        vector<vector<int>> dist(n, vector<int>(n, 0));
+        
+        for(int i = 0; i < n; i++)
+        {
+            for(int j = i+1; j < n; j++)
+            {
+                int mid = i + (j-i)/2;
+                
+                for(int k = i; k <=j; k++)
+                {
+                    dist[i][j] += abs(A[k]-A[mid]);
+                }
+                //dist[i][j] = dist[i][j-1] + abs(A[j]- A[mid]);
+            }
+        }
+        
+        vector<vector<int>> dp(n+1, vector<int>(k+1, INT_MAX));
+        
+        dp[0][0] = 0;
+        for(int i = 1; i <=n; i++)
+        {
+            dp[i][1] = dist[0][i-1];
+        }
+        
+        for(int j= 0; j <= k; j++)
+        {
+            dp[1][j] = 0;
+            dp[0][j] = 0;
+            
+        }
+        
+        for(int i = 0; i <=k && i <=n; i++)
+        {
+            for(int j = i; j>=0; j--)
+            {
+                dp[j][i] = 0;
+            }
+        }
+        
+        
+        for(int j = 2; j <=k; j++)
+        {
+            for(int i = j; i <=n; i++)
+            {
+                //dp[i][j] = INT_MAX;
+                for(int l = 1; l <i; l++)
+                {
+                    dp[i][j] = min(dp[i][j], dp[l][j-1] + dist[l][i-1]);
+                }
+            }
+        }
+        
+        return dp[n][k];
+        
+        
+    }
+};
