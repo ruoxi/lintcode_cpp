@@ -1,0 +1,54 @@
+Coins in a Line II
+
+ Description
+ Notes
+ Testcase
+ Judge
+There are n coins with different value in a line. Two players take turns to take one or two coins from left side until there are no more coins left. The player who take the coins with the most value wins.
+
+Could you please decide the first player will win or lose?
+
+Have you met this question in a real interview? Yes
+Example
+Given values array A = [1,2,2], return true.
+
+Given A = [1,2,4], return false.
+
+
+class Solution {
+public:
+    /**
+     * @param values: a vector of integers
+     * @return: a boolean which equals to true if the first player will win
+     */
+    //dp[i]表示先手能拿到的最大coins值
+    //dp[i] = max(sum[n-i+1...n-1]-dp[i-1]+a[n-i], sum[n-i+2...n-1]-dp[i-2]+a[n-i] + a[n-i+1])
+    
+    //initialization: dp[1] = values[n-1], dp[2] = values[n-1] + values[n-2]
+    bool firstWillWin(vector<int> &values) {
+        // write your code here
+        int n = values.size();
+        int total = 0;
+        vector<int> sum(n+1, 0);
+        
+        for(int i = 1; i <= n; i++)
+        {
+            total += values[i-1];
+            sum[i] = sum[i-1] + values[i-1];
+        }
+        
+        vector<int> dp(n+1, 0);
+        dp[1] = values[n-1];
+        dp[2] = values[n-2] + values[n-1];
+        
+        for(int i = 3; i <=n; i++)
+        {
+            int take_one = sum[n] - sum[n-i+1] - dp[i-1] + values[n-i];
+            int take_two = sum[n] - sum[n-i+2] - dp[i-2] + values[n-i] + values[n-i+1];
+            
+            dp[i] = max(take_one, take_two);
+        }
+        
+        return dp[n] > total/2;
+    }
+};
